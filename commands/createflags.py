@@ -962,7 +962,8 @@ async def createflags(interaction, cards) -> str:
     else:
         ychoice = ''
     flashes = ' -frw'
-    misc = ''.join([asprint, ond, rr, scan, etimers, ychoice, flashes])
+    hdmap = ' -wmhc'
+    misc = ''.join([asprint, ond, rr, scan, etimers, ychoice, flashes, hdmap])
 
     # CHALLENGES
     #nmc = random.choices(['', ' -nmc'], weights=([1, 5]), k=1)[0]
