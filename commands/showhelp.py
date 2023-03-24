@@ -1,6 +1,6 @@
 import discord
 
-VERSION = "v.0.9 2023-03-07 (DEV)"
+VERSION = "v.1.0 2023-03-24"
 
 async def showhelp(interaction):
     """
