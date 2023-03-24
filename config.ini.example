@@ -1,9 +1,9 @@
 [dev]
-permissions: 523365392
-default_bot_channel: bot_testing
-admin_roles: ['RaceBot Admin', 'Racebot Admin', 'Bot Command', 'Bot']
+permissions:
+default_bot_channel:
+admin_roles: ['', '', '', '']
 
 [prod]
-permissions: 523365392
-default_bot_channel: bot_testing
-admin_roles: ['RaceBot Admin', 'Racebot Admin', 'Bot Command', 'Bot']
+permissions:
+default_bot_channel:
+admin_roles: ['', '', '', '']
