@@ -36,7 +36,7 @@ async def br_join(interaction) -> None:
             await curs.execute("SELECT * FROM br_group_weeks WHERE week_num = (SELECT MAX(week_num) FROM br_group_weeks)")
             group_weeks = await curs.fetchall()
 
-    if group_weeks is not None:
+    if len(group_weeks) > 0:
         await interaction.response.send_message('Sorry, the event has already begun!', ephemeral=True)
         return None
 
