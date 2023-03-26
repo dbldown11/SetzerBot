@@ -208,11 +208,11 @@ async def createflags(interaction, cards) -> str:
     # go through the list of party member cards and remove the older of any conflicting multiples
     if len(party_cards) > 1:
         for cardnum in range(1, 13):
-            if cardnum in party_cards and cardnum + 14:
+            if cardnum in party_cards and (cardnum + 14) in party_cards:
                 if await last_card(party_cards, cardnum, cardnum + 14) == cardnum:
-                    remove_card(party_cards, cardnum + 14)
-                elif await last_card(party_cards, cardnum, cardnum + 14) == cardnum + 14:
-                    remove_card(party_cards, cardnum)
+                    party_cards = remove_card(party_cards, cardnum + 14)
+                elif await last_card(party_cards, cardnum, cardnum + 14) == (cardnum + 14):
+                    party_cards = remove_card(party_cards, cardnum)
 
     # drop the earliest drafted cards with conflicts if we have too many party cards
     if len(party_cards) > party_size:
