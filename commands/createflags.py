@@ -316,12 +316,16 @@ async def createflags(interaction, cards) -> str:
     # CHARACTERS
     #sal = random.choices([' -sal', ''], weights=([13, 1]), k=1)[0]
     #sn = random.choices([' -sn', ''], weights=([1, 13]), k=1)[0]
+    """
     if 132 in cards:
         sal = ''
         sn = ' -sn'
     else:
         sal = ' -sal'
         sn = ''
+    """
+    sal = ' -sal'
+    sn = ''
     #eu = random.choices([' -eu', ''], weights=([13, 1]), k=1)[0]
     eu = ' -eu'
     #csrp1 = random.randint(90, 120)
