@@ -52,12 +52,12 @@ async def createflags(interaction, cards) -> str:
         obj_count += 1
     elif ktcard == 52:
         ktdragons = 4
-        kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.2.2.2', str(ktchars), str(ktchars), '4', str(ktespers), str(ktespers), '6',
+        kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.3.3.2', str(ktchars), str(ktchars), '4', str(ktespers), str(ktespers), '6',
                        str(ktdragons), str(ktdragons)])
         obj_count += 1
     elif ktcard == 53:
         ktbosses = 16
-        kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.2.2.2', str(ktchars), str(ktchars), '4', str(ktespers), str(ktespers), '8',
+        kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.3.3.2', str(ktchars), str(ktchars), '4', str(ktespers), str(ktespers), '8',
                        str(ktbosses), str(ktbosses)])
         obj_count += 1
     else:
