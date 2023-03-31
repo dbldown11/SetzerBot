@@ -121,7 +121,7 @@ async def draftpick(interaction):
             current_categories = [i[1] for i in cards]
             new_card = random.choices(card_data, weights=([int(i[3]) for i in card_data]))[0]
             # if has_drawn_removal == False and new_card[4] == '4' and random.random() < 0.1:
-            if has_drawn_removal == False and random.random() < 0.05 and len(cards) > 0:
+            if has_drawn_removal == False and random.random() < 0.05 and len(cards) > 1:
                 new_card = [0, 'Special', 'Special', '4', 'Calmness', 'Remove a previously selected card from this seed']
                 has_drawn_removal = True
                 pick_list.append(new_card[0])
