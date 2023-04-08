@@ -10,11 +10,7 @@ async def last_card(lst, *nums):
     int: The last integer from the given set that appears in the list, or None if none are found.
     """
     last_integer = None
-    for num in nums:
-        try:
-            index = len(lst) - lst[::-1].index(num) - 1
-            if last_integer is None or index > lst.index(last_integer):
-                last_integer = num
-        except ValueError:
-            pass
+    for card in lst:
+        if card in nums:
+            last_integer = card
     return last_integer
