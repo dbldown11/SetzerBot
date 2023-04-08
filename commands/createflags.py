@@ -719,13 +719,16 @@ async def createflags(interaction, cards) -> str:
 
     mmp = ' '.join([' -mmprp', str(mmprp1), str(mmprp2)])
 
-    rls_card = await last_card(cards,123,124,125)
-    if rls_card == 123:
-        rls = ' -rls black'
-    elif rls_card == 124:
-        rls = ' -rls white'
-    elif rls_card == 125:
-        rls = ' -rls gray'
+    # remove learnable spells - cards 123,124,125
+    rls_list = []
+    if 123 in cards:
+        rls_list.append('black')
+    if 124 in cards:
+        rls_list.append('white')
+    if 125 in cards:
+        rls_list.append('gray')
+    if len(rls_list) > 0:
+        rls = ' -rls ' + ','.join(rls_list)
     else:
         rls = ''
 
