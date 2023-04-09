@@ -90,7 +90,7 @@ async def br_pick(interaction):
                 await curs.execute("SELECT * FROM br_picks WHERE group_id = ? AND week_id = ? and pick_number = ?",
                                    (current_group_week['id'],current_group_week['id'],current_pick['pick_number']-1))
                 last_pick = await curs.fetchone()
-        if last_pick['card_id'] == 0 and last_pick['removed_card'] == 0:
+        if last_pick['card_id'] == 0 and last_pick['removed_card'] is None:
             emessage = f'Please wait until the previous drafter has chosen their Calmness target.'
             await interaction.response.send_message(emessage, ephemeral=True)
             return None
