@@ -52,7 +52,7 @@ async def br_updatedeck(interaction, deck_csv):
 
     async with asqlite.connect(path) as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("""CREATE TABLE IF NOT EXISTS "br_cards" (
+            await cursor.execute('''CREATE TABLE IF NOT EXISTS "br_cards" (
                 "id"	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
                 "category"	TEXT,
                 "weighting"	TEXT,
@@ -60,7 +60,7 @@ async def br_updatedeck(interaction, deck_csv):
                 "name"	TEXT,
                 "desc"	TEXT,
                 "difficulty" INTEGER
-                );""")
+                );''')
             #print('made new table')
             #await conn.commit()
             #print('committed')
@@ -76,13 +76,13 @@ async def br_updatedeck(interaction, deck_csv):
         async with asqlite.connect(path) as conn:
             async with conn.cursor() as cursor:
                 for csv_row in csv_reader:
-                    #print(csv_row)
+                    print(csv_row)
                     await cursor.execute("""INSERT INTO br_cards (id, category, weighting, rarity, name, desc, difficulty) 
-                    VALUES (?, ?, ?, ?, ?, ?,?)""", tuple(csv_row))
+                    VALUES (?, ?, ?, ?, ?, ?, ?)""", tuple(csv_row))
 
     # Commit the changes to the database and close the connection
-                #await conn.commit()
-                #await conn.close()
+                await conn.commit()
+                await conn.close()
 
     os.remove(deck_csv.filename)
 
