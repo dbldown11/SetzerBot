@@ -68,7 +68,7 @@ async def br_pick(interaction):
         if week['group_id'] == current_user['group_id']:
             current_group_week = week
 
-    if current_weeks is None:
+    if current_group_week is None:
         print('your group doesn''t have a week???')
         return None
 
@@ -88,7 +88,7 @@ async def br_pick(interaction):
         async with asqlite.connect(path) as conn:
             async with conn.cursor() as curs:
                 await curs.execute("SELECT * FROM br_picks WHERE group_id = ? AND week_id = ? and pick_number = ?",
-                                   (current_group_week['id'],current_group_week['week_id'],current_pick['pick_number']-1))
+                                   (current_group_week['id'],current_group_week['id'],current_pick['pick_number']-1))
                 last_pick = await curs.fetchone()
         if last_pick['card_id'] == 0 and last_pick['removed_card'] == 0:
             emessage = f'Please wait until the previous drafter has chosen their Calmness target.'
@@ -128,7 +128,6 @@ async def br_pick(interaction):
 
         has_drawn_removal = False
         pick_list = []
-        #TODO May need to update this next level for final group selection
         while len(cards) < 3:
             current_categories = [i[1] for i in cards]
             new_card = random.choices(card_data, weights=([int(i[3]) for i in card_data]))[0]
