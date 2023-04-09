@@ -311,7 +311,7 @@ async def raceroom_name_autocomplete(
 @br_group.command(name="updatedeck", description="(Admin Only) Update the deck used for the Blackjack Battle Royale")
 async def updatedeckcommand(interaction: discord.Interaction, deck_csv: discord.Attachment):
     if isAdmin(interaction.user):
-        await updatedeck(interaction,deck_csv)
+        await br_updatedeck(interaction,deck_csv)
     else:
         await interaction.response.send_message('Sorry, but that command is restricted to SetzerBot admin users only.',ephemeral=True)
 
@@ -338,6 +338,8 @@ client.run(token)
 #TODO Ghost drafters if someone wants to solo draft with others
 #TODO Extra options for newdraft: nocalmness, alwayscalmness, norarity, exclude categories, random exclude
 #TODO User-created draft order
+
+#TODO Mulligans (discard choices for choices -1, random topdeck)
 
 '''
 command
