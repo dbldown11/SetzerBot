@@ -35,7 +35,7 @@ async def canceldraft(interaction) -> dict:
         await interaction.response.send_message(emessage, ephemeral=True)
         return None
     else:
-        if interaction.user.id != data['creator_id'] or not isAdmin(interaction.user):
+        if interaction.user.id != data['creator_id'] and not isAdmin(interaction.user):
             emessage = f'Only the draft creator can cancel the draft.'
             await interaction.response.send_message(emessage, ephemeral=True)
             return None
