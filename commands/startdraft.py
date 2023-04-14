@@ -147,7 +147,7 @@ async def startdraft(interaction) -> dict:
 
     async with asqlite.connect(path) as conn:
         async with conn.cursor() as curs:
-            await curs.execute("SELECT * FROM drafters WHERE draft_id = ? AND pick_order = 1", (data['id'],))
+            await curs.execute("SELECT * FROM drafters WHERE draft_id = ? AND pick_orde = 1", (data['id'],))
             current_drafter = await curs.fetchone()
     next_up = interaction.guild.get_member(current_drafter["user_id"])
     await channel.send(f'The first drafter is **{next_up.display_name}**!\n'
