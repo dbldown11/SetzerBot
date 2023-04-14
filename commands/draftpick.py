@@ -90,7 +90,7 @@ async def draftpick(interaction):
             await interaction.response.send_message(emessage, ephemeral=True)
             return None
 
-    if current_pick['drafter_id'] is not current_drafter['index_id']:
+    if str(current_pick['drafter_id']) is not str(current_drafter['index_id']):
         query = (current_pick['drafter_id'], data['id'])
         async with asqlite.connect(path) as conn:
             async with conn.cursor() as curs:
