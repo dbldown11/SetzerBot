@@ -89,9 +89,8 @@ async def draftpick(interaction):
             emessage = f'Please wait until the previous drafter has chosen their Calmness target.'
             await interaction.response.send_message(emessage, ephemeral=True)
             return None
-    print(f'current pick drafter id:{current_pick["drafter_id"]}')
-    print(f'current drafter index id:{current_drafter["index_id"]}')
-    if current_pick['drafter_id'] is not current_drafter['index_id']:
+
+    if current_pick['drafter_id'] != current_drafter['index_id']:
         query = (current_pick['drafter_id'], data['id'])
         async with asqlite.connect(path) as conn:
             async with conn.cursor() as curs:
