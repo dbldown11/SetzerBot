@@ -56,9 +56,7 @@ async def br_showpicks(interaction) -> None:
     for pick in all_picks:
         count_pick += 1
         drafter_user_id = [x['user_id'] for x in drafters if x['id'] == pick['player_id']]
-        print(drafter_user_id)
         drafter_name = interaction.guild.get_member(drafter_user_id[0])
-        print(f'drafter_name is {drafter_name}')
         if drafter_name == None:
             displayname = 'A departed soul'
         else:
