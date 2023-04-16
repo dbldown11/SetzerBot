@@ -58,6 +58,7 @@ async def br_showpicks(interaction) -> None:
         drafter_user_id = [x['user_id'] for x in drafters if x['id'] == pick['player_id']]
         print(drafter_user_id)
         drafter_name = interaction.guild.get_member(drafter_user_id[0])
+        print(f'drafter_name is {drafter_name}')
         pick_number = pick['pick_number']
         if pick['card_id'] is not None:
             if pick['card_id'] == 0:
