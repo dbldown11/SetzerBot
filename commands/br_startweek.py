@@ -270,7 +270,7 @@ async def br_startweek(interaction) -> None:
                                                 "SELECT * FROM br_group_weeks WHERE group_id = ? AND week_num = ?",
                                                 (player['group_id'], week_num))
                                             group_week = await curs.fetchone()
-                                            pick_data = (group['id'], player['id'], group_week['id'], count + 1, 0)
+                                            pick_data = (group['id'], player['id'], group_week['id'], count, 0)
                                             await curs.execute(
                                                 """INSERT INTO br_picks (group_id, player_id, week_id, pick_number, removed_card) VALUES (?,?,?,?,?);""",
                                                 pick_data)
