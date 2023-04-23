@@ -5,7 +5,7 @@ import os
 from functions.constants import DATA_PATH
 from functions.isAdmin import isAdmin
 
-async def canceldraft(interaction) -> dict:
+async def canceldraft(interaction) -> None:
     """
     Cancels a draft in the channel the command is called in
 

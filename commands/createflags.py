@@ -485,11 +485,15 @@ async def createflags(interaction, cards) -> str:
 
     if 37 in cards:
         stloc = ' -stloc shuffle'
+    elif boss_card == 34:
+        stloc = ' -stloc original'
     else:
         stloc = ' -stloc mix'
 
     #bb = random.choices([' -bbr', ' -bbs', ''], weights=([1, 13, 1]), k=1)[0]
-    if 38 in cards:
+    if boss_card == 34:
+        drloc = ' -drloc original'
+    elif 38 in cards:
         drloc = ' -drloc mix'
     else:
         drloc = ' -drloc shuffle'

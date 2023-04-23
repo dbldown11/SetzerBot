@@ -1,3 +1,5 @@
 /.env
 /config.ini
 /data
+draftdata.db
+br_data.db

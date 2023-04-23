@@ -135,6 +135,7 @@ async def br_pick(interaction):
             if has_drawn_removal == False and random.random() < 0.05 and len(cards) > 1:
                 new_card = [0, 'Special', 'Special', '4', 'Calmness', 'Remove a previously selected card from this seed']
                 has_drawn_removal = True
+                cards.append(new_card)
                 pick_list.append(new_card[0])
             elif len(current_categories) == 0:
                 cards.append(new_card)
