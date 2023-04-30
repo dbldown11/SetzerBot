@@ -69,6 +69,8 @@ async def br_startweek(interaction) -> None:
         if player['is_final_table'] == True:
             is_finals_already = True
 
+    await interaction.response.defer()
+
     #determine if any non-finals/non-lounge group has > 1 person - if not, then it's time to start finals
     if is_finals_already == False:
         max_group_size = 0
@@ -302,5 +304,5 @@ async def br_startweek(interaction) -> None:
         pick_user = discord.utils.get(interaction.guild.members,id=pick['user_id'])
         await group_channel.send(f"""{pick_user.display_name} has the first pick this week for {pick['name']}.\n{pick_user.mention}, please make your pick using the `/br pick` command.""")
 
-    await interaction.response.send_message(f'Drafting for week {week_num} of the Blackjack Battle Royale has begun. Players, please head to your tables!')
+    await interaction.followup.send(f'Drafting for week {week_num} of the Blackjack Battle Royale has begun. Players, please head to your tables!')
 
