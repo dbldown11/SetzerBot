@@ -43,4 +43,4 @@ async def br_setloungewinner(interaction, user) -> None:
             await curs.execute("UPDATE br_players SET is_lounge_winner = 0")
             await curs.execute("UPDATE br_players SET is_lounge_winner = 1 WHERE user_id = ?",(user.id))
 
-    await interaction.response.send_message(content=f"{user.display_name} is now set as the Lagomorph Lounge winner!",ephemeral=True)
+    await interaction.response.send_message(content=f"{user.mention} has been declared the Lagomorph Lounge winner!")
