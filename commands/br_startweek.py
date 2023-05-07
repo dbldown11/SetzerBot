@@ -83,6 +83,7 @@ async def br_startweek(interaction) -> None:
                 max_group_size = group_count
         #make a finals table if it's the end
         if max_group_size == 1:
+            print('initializing finals')
             is_finals_already = True
             #get final table role
             for group in br_groups:
@@ -91,7 +92,7 @@ async def br_startweek(interaction) -> None:
                     final_group_channel = discord.utils.get(interaction.guild.text_channels, id=group['channel_id'])
             final_group_role = discord.utils.get(interaction.guild.roles, id=final_group_role_id)
             for player in br_players:
-                if (player['is_demoted'] == True and player['is_lounge_winner'] == True) or player['is_demoted'] == False:
+                if (player['is_demoted'] == True and player['is_lounge_winner'] == True) or (player['is_demoted'] == False and player['group_id'] in range(1,11)):
                     print(f'promoting {player["user_id"]}')
                     winner_group = player['group_id']
                     async with asqlite.connect(path) as conn:
@@ -118,7 +119,7 @@ async def br_startweek(interaction) -> None:
                     await final_group_channel.send(f'{promoted_user.mention}, has arrived at the final table from **{winning_group_name[0]}**!')
 
 
-        print('A final table was made!')
+            print('A final table was made!')
 
     #Create weeks
     async with asqlite.connect(path) as conn:
