@@ -188,7 +188,8 @@ async def br_startweek(interaction) -> None:
                                          reverse=True)  # sorted in descending order
             # random.shuffle(group_players)
             # print(result_dicts_sorted)
-
+            player_count = len(final_players)
+            result_dicts_sorted = result_dicts_sorted[0-player_count:]
             for count, race_finish in enumerate(result_dicts_sorted):
                 for player in final_players:
                     if str(race_finish['id']) == str(player['user_id']):
