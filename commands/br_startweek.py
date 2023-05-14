@@ -108,6 +108,8 @@ async def br_startweek(interaction) -> None:
                     winner_cards = []
                     for pick in winner_group_picks:
                         winner_cards.append(pick['card_id'])
+                    if len(winner_cards) > 25:
+                        winner_cards = winner_cards[-25:]
                     winner_card_string = await int_list_to_string(winner_cards)
                     async with asqlite.connect(path) as conn:
                         async with conn.cursor() as curs:
@@ -188,7 +190,7 @@ async def br_startweek(interaction) -> None:
             # print(result_dicts_sorted)
 
             for count, race_finish in enumerate(result_dicts_sorted):
-                for player in initial_group_players:
+                for player in final_players:
                     if str(race_finish['id']) == str(player['user_id']):
                         print(f'match on {race_finish["id"]}')
                         async with asqlite.connect(path) as conn:
