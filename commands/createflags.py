@@ -913,10 +913,12 @@ async def createflags(interaction, cards) -> str:
         shopinv = ' -sisr 60'
         sprv1 = 2000
         sprv2 = 2000
+        ssf = ''
     elif shop_card == 141:
         shopinv = ' -sisr 60'
         sprv1 = 0
         sprv2 = 0
+        ssf = ' -ssf0'
     else:
         shopinv = ' -sisr 20'
         sprp1 = 75
