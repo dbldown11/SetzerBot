@@ -184,7 +184,7 @@ async def createflags(interaction, cards) -> str:
     if 143 in cards:
         objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 59.1.1.10.12.12'])
         obj_count += 1
-    if 147 in cards:
+    if 146 in cards:
         objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 45.10.10.1.1.12.9'])
         obj_count += 1
         objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 48.10.10.1.1.12.9'])
