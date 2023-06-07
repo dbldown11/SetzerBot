@@ -1043,7 +1043,7 @@ async def createflags(interaction, cards) -> str:
     # CHALLENGES
     # nmc = random.choices(['', ' -nmc'], weights=([1, 5]), k=1)[0]
     nmc = ' -nmc'
-    if 148 in cards:
+    if 147 in cards:
         ame = ' -ame 0'
     else:
         ame = ' -ame 2'
