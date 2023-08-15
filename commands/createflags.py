@@ -615,7 +615,7 @@ async def createflags(interaction, cards) -> str:
     elif scale_card == 144:
         lscale = ' -lsc 2.5'
         hmscale = ' -hmc 2.5'
-        xgscale = ' -xgc 1'
+        xgscale = ' -xgc 2'
         msl = ' -msl 50'
     else:
         lscale = ' -lsced 2'
