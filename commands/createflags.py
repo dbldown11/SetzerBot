@@ -76,6 +76,7 @@ async def createflags(interaction, cards) -> str:
             [' -' + obj_prefix[obj_count] + ' 2.2.2.2', str(ktchars), str(ktchars), '4', str(ktespers), str(ktespers)])
         obj_count += 1
     elif ktcard == 138:
+        ktchars = 0
         ktespers = 10
         kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.1.1.4', str(ktespers), str(ktespers)])
         obj_count += 1
