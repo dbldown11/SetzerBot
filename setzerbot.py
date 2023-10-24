@@ -70,6 +70,10 @@ tree = app_commands.CommandTree(client)
 async def showhelpcommand(interaction: discord.Interaction):
     await showhelp(interaction)
 
+@tree.command(name="showdeck", description="Sends a link to the current deck of draft cards")
+async def showdeckcommand(interaction: discord.Interaction):
+    await interaction.response.send_message('Current SetzerBot draft deck: https://tinyurl.com/setzerdeck', ephemeral=True, suppress_embeds=True)
+
 @tree.command(name="newdraft", description="Set up a new draft")
 @app_commands.describe(
     drafters='The maximum number of players who will be drafting (default: 4, min: 1, max: 25)')
