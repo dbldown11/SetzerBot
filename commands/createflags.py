@@ -82,7 +82,7 @@ async def createflags(interaction, cards) -> str:
         obj_count += 1
     elif ktcard == 139:
         kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.1.1.10.18.18'])
-        ktespers = 12
+        ktespers = 12 # this is a substitute for actual esper account so wide open horizon works with overflow skip
         obj_count += 1
     else:
         kt = '.'.join(
@@ -220,6 +220,12 @@ async def createflags(interaction, cards) -> str:
         obj_count += 1
     if 122 in cards:
         objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 12.0.0'])
+        obj_count += 1
+    if 148 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 63.0.0'])
+        obj_count += 1
+    if 149 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 64.0.0'])
         obj_count += 1
 
     game = ''.join([settings, kt, objectives])
@@ -693,6 +699,7 @@ async def createflags(interaction, cards) -> str:
     if esper_card == 79:
         esr1 = 3
         esr2 = 5
+        el = ' -elr'
         ebonus = ' -ebr 100'
         emprp1 = 50
         emprp2 = 80
@@ -700,6 +707,7 @@ async def createflags(interaction, cards) -> str:
     elif esper_card == 80:
         esr1 = 0
         esr2 = 2
+        el = ' -elr'
         ebonus = ' -ebr 20'
         emprp1 = 100
         emprp2 = 150
@@ -707,18 +715,21 @@ async def createflags(interaction, cards) -> str:
     else:
         esr1 = 1
         esr2 = 4
+        el = ' -elr'
         ebonus = ' -ebr 75'
         emprp1 = 75
         emprp2 = 125
         ems = ''
     if esper_card == 142:
         ess = ''
+        el = ''
         ebonus = ''
         emp = ''
         eeq = ''
         ems = ''
     elif esper_card == 145:
         ess = ' -esrt'
+        el = ' -elr'
         ebonus = ' -ebr 75'
         emp = ' -emprp 75 125'
         eeq = ''
@@ -728,7 +739,11 @@ async def createflags(interaction, cards) -> str:
         emp = ' '.join([' -emprp', str(emprp1), str(emprp2)])
         eeq = ''
 
-    espers = ''.join([stesp, ess, ebonus, emp, eeq, ems])
+    # LEARNRATES
+    if 150 in cards and esper_card != 142:
+        el = ' -elrt'
+
+    espers = ''.join([stesp, ess, el, ebonus, emp, eeq, ems])
 
     # NATURAL MAGIC
     '''
@@ -776,7 +791,7 @@ async def createflags(interaction, cards) -> str:
 
     mmp = ' '.join([' -mmprp', str(mmprp1), str(mmprp2)])
 
-    # remove learnable spells - cards 123,124,125
+    # remove learnable spells - cards 123,124,125,152
     rls_list = []
     if 123 in cards:
         rls_list.append('black')
@@ -784,6 +799,8 @@ async def createflags(interaction, cards) -> str:
         rls_list.append('white')
     if 125 in cards:
         rls_list.append('gray')
+    if 152 in cards:
+        rls_list.append('top')
     if len(rls_list) > 0:
         rls = ' -rls ' + ','.join(rls_list)
     else:
@@ -848,7 +865,7 @@ async def createflags(interaction, cards) -> str:
     iersr = ' '.join([' -iersr', str(random.randint(33, 100))])
     requip = random.choices(['', ierr, ierbr, ieror, iersr], weights=([1, 1, 1, 13, 1]), k=1)[0]
     '''
-    equip_card = await last_card(cards, 65, 66, 67)
+    equip_card = await last_card(cards, 65, 66, 67, 151)
     if equip_card == 65:
         iequip = ' -ieor 100'
         requip = ' -ieror 100'
@@ -858,6 +875,9 @@ async def createflags(interaction, cards) -> str:
     elif equip_card == 67:
         iequip = ''
         requip = ''
+    elif equip_card == 151:
+        iequip = ' -ietr'
+        requip = ' -iertr'
     else:
         iequip = ' -ieor 33'
         requip = ' -ieror 33'
@@ -883,6 +903,25 @@ async def createflags(interaction, cards) -> str:
     # saw = random.choices([' -saw', ''], weights=([1, 0]), k=1)[0]
     saw = ' -saw'
     equips = ''.join([iequip, requip, csb, mca, stra, saw])
+
+    # ITEM REWARDS
+    rewards_card = await last_card(cards, 153, 154, 155, 156, 157, 158, 159)
+    if rewards_card == 153:
+        ir = ' -ir stronger'
+    elif rewards_card == 154:
+        ir = ' -ir premium'
+    elif rewards_card == 155:
+        ir = ' -ir 9,26,27,28'
+    elif rewards_card == 156:
+        ir = ' -ir 82,211'
+    elif rewards_card == 157:
+        ir = ' -ir 96,97,98,239'
+    elif rewards_card == 158:
+        ir = ' -ir 201,202,206,209,211,217,224,228'
+    elif rewards_card == 159:
+        ir = ' -ir none'
+    else:
+        ir = ' -ir standard'
 
     # SHOPS
     shop_card = await last_card(cards, 68, 69, 70, 71, 133, 140, 141)
@@ -982,12 +1021,17 @@ async def createflags(interaction, cards) -> str:
     else:
         ccontents = ' -ccsr 20'
 
+    if 160 in cards:
+        chrm = ' -chrm 5 0'
+    else:
+        chrm = ''
+
     # ccontents = random.choices(['', ' -ccrt', ' -cce', ' '.join([' -ccsr', str(random.randint(20, 40))])],
     #                           weights=([1, 3, 0, 13]), k=1)[0]
     # cms = random.choices(['', ' -cms'], weights=([0, 1]), k=1)[0]
-    chests = ''.join([ccontents, cms])
+    chests = ''.join([ccontents, cms, chrm])
 
-    items = ''.join([s_inv, equips, shops, chests])
+    items = ''.join([s_inv, equips, ir, shops, chests])
 
     # -----CUSTOM-----
     # SEE CUSTOM_SPRITES_PORTRAITS.PY
