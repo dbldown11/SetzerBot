@@ -21,6 +21,7 @@ async def createflags(interaction, cards) -> str:
     -------
     A str containing an FF6 WC flagstring
     """
+    # Full credit to wrjones104 - the basis of all of this code was lifted directly from the indispensable SeedBot
     obj_count = 0
     obj_prefix = ['oa', 'ob', 'oc', 'od', 'oe', 'of', 'og', 'oh', 'oi', 'oj', 'ok', 'ol', 'om', 'on', 'oo', 'op', 'oq',
                   'or', 'os', 'ot',
@@ -33,7 +34,6 @@ async def createflags(interaction, cards) -> str:
     else:
         mode = "-cg"
 
-    # slog = random.choices(['', ' -sl'], weights=([1, 0]), k=1)[0]
     slog = ''
     settings = ''.join([mode, slog])
 
@@ -82,7 +82,7 @@ async def createflags(interaction, cards) -> str:
         obj_count += 1
     elif ktcard == 139:
         kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.1.1.10.18.18'])
-        ktespers = 12 # this is a substitute for actual esper account so wide open horizon works with overflow skip
+        ktespers = 12 # this is a proxy for actual esper account so that wide open horizon works with overflow skip
         obj_count += 1
     else:
         kt = '.'.join(
@@ -242,12 +242,12 @@ async def createflags(interaction, cards) -> str:
         party_size = 3
 
     # build a list of all party member cards
-    print(f'the cards in this draft are {cards}')
+    print(f'The cards in this draft are: {cards}')
     party_cards = []
     for num in cards:
         if 1 <= num <= 26:
             party_cards.append(num)
-    print(f'the party-related cards in this one are {party_cards}')
+    print(f'The party-related cards in this draft are: {party_cards}')
 
     # go through the list of party member cards and remove the older of any conflicting multiples
     if len(party_cards) > 1:
@@ -265,9 +265,7 @@ async def createflags(interaction, cards) -> str:
     if len(party_cards) > party_size:
         party_cards = party_cards[(len(party_cards) - party_size):]
 
-    print(f'after removing and downsizing to party size cap and removing duplicates, the party-related cards in this one are {party_cards}')
-
-
+    print(f'After removing and downsizing to party size cap and removing duplicates, the party-related cards in this draft are: {party_cards}')
 
     sc_list = []
     for count, x in enumerate(party_cards):
@@ -306,72 +304,37 @@ async def createflags(interaction, cards) -> str:
     sparty = ''.join(sc_list)
 
     # SWORDTECHS
-    # fst = random.choices([' -fst', ''], weights=([1, 0]), k=1)[0]
-    # sel = random.choices([' -sel', ''], weights=([1, 5]), k=1)[0]
     swdtech = ' -fst'
 
     # BLITZES
-    # brl = random.choices([' -brl', ''], weights=([10, 1]), k=1)[0]
-    # bel = random.choices([' -bel', ''], weights=([1, 10]), k=1)[0]
     blitz = ' -brl'
 
     # LORES
     slr1 = 3
     slr2 = 6
-    # slrr = ' '.join([' -slr', str(slr1), str(slr2)])
-    # slr = random.choices([slrr, ''], weights=([10, 1]), k=1)[0]
     slr = ' '.join([' -slr', str(slr1), str(slr2)])
-    # lmprp1 = random.randint(75, 100)
-    # lmprp2 = random.randint(lmprp1, 125)
-    # lmprv1 = random.randint(20, 40)
-    # lmprv2 = random.randint(lmprv1, 75)
-    # lmprp = ' '.join([' -lmprp', str(lmprp1), str(lmprp2)])
-    # lmprv = ' '.join([' -lmprv', str(lmprv1), str(lmprv2)])
-    # loremp = random.choices(['', ' -lmps', lmprp, lmprv], weights=([1, 3, 10, 3]), k=1)[0]
     loremp = ' -lmprp 75 125'
-    # lel = random.choices([' -lel', ''], weights=([1, 0]), k=1)[0]
     lel = ' -lel'
     lores = ''.join([slr, loremp, lel])
 
     # RAGES
-    # srr1 = random.randint(0, 10)
-    # srr2 = random.randint(srr1, 25)
-    # srr = ' '.join([' -srr', str(srr1), str(srr2)])
-    # srages = random.choices(['', srr], weights=([1, 13]), k=1)[0]
     srages = ' -srr 25 35'
-    # rnl = random.choices([' -rnl', ''], weights=([1, 0]), k=1)[0]
-    # rnc = random.choices([' -rnc', ''], weights=([15, 1]), k=1)[0]
     rage = ''.join([srages, ' -rnl', ' -rnc'])
 
     # DANCES
-    '''
-    sdr1 = random.randint(0, 2)
-    sdr2 = random.randint(sdr1, 4)
-    sdr = ' '.join([' -sdr', str(sdr1), str(sdr2)])
-    das = random.choices([' -das', ''], weights=([1, 0]), k=1)[0]
-    dda = random.choices([' -dda', ''], weights=([1, 0]), k=1)[0]
-    dns = random.choices([' -dns', ''], weights=([1, 0]), k=1)[0]
-    d_el = random.choices([' -del', ''], weights=([0, 1]), k=1)[0]
-    dance = ''.join([sdr, das, dda, dns, d_el])
-    '''
     dance = ' -sdr 1 2 -das -dda -dns'
 
     # STEAL CHANCES
-    # steal = random.choice(['', ' -sch', ' -sch', ' -sca', ' -sca', ' -sca'])
     steal = ' -sch'
 
     # SKETCH/CONTROL
     sketch = ' -scis'
 
     # CHARACTERS
-    # sal = random.choices([' -sal', ''], weights=([13, 1]), k=1)[0]
-    # sn = random.choices([' -sn', ''], weights=([1, 13]), k=1)[0]
     sal = ' -sal'
     sn = ''
-    # eu = random.choices([' -eu', ''], weights=([13, 1]), k=1)[0]
     eu = ' -eu'
-    # csrp1 = random.randint(90, 120)
-    # csrp2 = random.randint(csrp1, 130)
+
     stats_card = await last_card(cards, 29, 30, 31, 32, 33)
     if stats_card == 29:
         csrp1 = 60
@@ -396,7 +359,6 @@ async def createflags(interaction, cards) -> str:
     cstats = ''.join([sal, sn, eu, csrp])
 
     # COMMANDS
-    # scc = random.choices([' -scc', ''], weights=([1, 10]), k=1)[0]
     scc = ''
     command_card = await last_card(cards, 86, 87, 88, 89)
     if command_card == 88:
@@ -455,12 +417,8 @@ async def createflags(interaction, cards) -> str:
     if 26 in party_cards:
         command_list[11] = '06'
 
-    # com = random.choices([' -com 99999999999999999999999999', '', ' -com 98989898989898989898989898'],
-    #                     weights=([2, 1, 13]), k=1)[0]
     com = ' -com '
     com += ''.join(command_list)
-    # recskills = ['10', '6', '14', '19', '24', '26', '22', '12', '3', '28', '16', '11', '27', '13', '15', '5',
-    #             '7', '8', '9', '23', '29']
     if command_card == 86:
         rec1 = ' -rec1 28'
         rec2 = ' -rec2 14'
@@ -489,11 +447,6 @@ async def createflags(interaction, cards) -> str:
 
     # -----BATTLE-----
     # XP, GP, MP growth rates
-    '''
-    xpm = ' '.join([' -xpm', str(random.choices([2, 3, 4], weights=([1, 10, 1]), k=1)[0])])
-    gpm = ' '.join([' -gpm', str(random.choices([4, 5, 6], weights=([1, 10, 1]), k=1)[0])])
-    mpm = ' '.join([' -mpm', str(random.choices([4, 5, 6], weights=([1, 10, 1]), k=1)[0])])
-    '''
     batreward_card = await last_card(cards, 48, 49)
     if batreward_card == 48:
         xpm = ' -xpm 4'
@@ -513,7 +466,6 @@ async def createflags(interaction, cards) -> str:
     else:
         nxppd = ' -nxppd'
 
-    # nxppd = random.choices([' -nxppd', ''], weights=([13, 1]), k=1)[0]
     xpmpgp = ''.join([xpm, gpm, mpm, nxppd])
 
     # BOSSES
@@ -532,37 +484,29 @@ async def createflags(interaction, cards) -> str:
     else:
         stloc = ' -stloc mix'
 
-    # bb = random.choices([' -bbr', ' -bbs', ''], weights=([1, 13, 1]), k=1)[0]
     if boss_card == 34:
         drloc = ' -drloc original'
     elif 38 in cards:
         drloc = ' -drloc mix'
     else:
         drloc = ' -drloc shuffle'
-    # bmbd = random.choices([' -bmbd', ''], weights=([0, 1]), k=1)[0]
+
     srp3 = ''
-    # srp3 = random.choices([' -srp3', ''], weights=([0, 1]), k=1)[0]
     if 115 in cards:
         bnds = ' -bnds'
     else:
         bnds = ''
-    # bnds = random.choices([' -bnds', ''], weights=([1, 13]), k=1)[0]
+
     if 117 in cards:
         be = ''
     else:
         be = ' -be'
-    # be = random.choices([' -be', ''], weights=([1, 0]), k=1)[0]
+
     bnu = ' -bnu'
-    # bnu = random.choices([' -bnu', ''], weights=([10, 1]), k=1)[0]
+
     bosses = ''.join([bb, drloc, stloc, srp3, bnds, be, bnu])
 
     # BOSS AI
-    '''
-    dgne = random.choices([' -dgne', ''], weights=([1, 0]), k=1)[0]
-    wnz = random.choices([' -wnz', ''], weights=([1, 0]), k=1)[0]
-    mmnu = random.choices([' -mmnu', ''], weights=([1, 0]), k=1)[0]
-    cmd = random.choices([' -cmd', ''], weights=([1, 0]), k=1)[0]
-    '''
     dgne = ' -dgne'
     wnz = ' -wnz'
     mmnu = ' -mmnu'
@@ -570,30 +514,6 @@ async def createflags(interaction, cards) -> str:
     b_ai = ''.join([dgne, wnz, mmnu, cmd])
 
     # SCALING
-    '''
-    scale_opt = ['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5']
-    lspf = ' '.join([' -lsced', random.choices(scale_opt, weights=([0, 1, 1, 10, 2, 1, 0, 0, 0, 0]), k=1)[0]])
-    lsaf = ' '.join([' -lsa', random.choices(scale_opt, weights=([0, 13, 1, 0, 0, 0, 0, 0, 0, 0]), k=1)[0]])
-    lshf = ' '.join([' -lsh', random.choices(scale_opt, weights=([0, 13, 1, 0, 0, 0, 0, 0, 0, 0]), k=1)[0]])
-    lstf = ' '.join([' -lst', random.choices(scale_opt, weights=([0, 1, 5, 10, 1, 0, 0, 0, 0, 0]), k=1)[0]])
-    hmpf = ' '.join([' -hmced', random.choices(scale_opt, weights=([0, 1, 1, 10, 2, 1, 0, 0, 0, 0]), k=1)[0]])
-    hmaf = ' '.join([' -hma', random.choices(scale_opt, weights=([0, 13, 1, 0, 0, 0, 0, 0, 0, 0]), k=1)[0]])
-    hmhf = ' '.join([' -hmh', random.choices(scale_opt, weights=([0, 13, 1, 0, 0, 0, 0, 0, 0, 0]), k=1)[0]])
-    hmtf = ' '.join([' -hmt', random.choices(scale_opt, weights=([0, 1, 5, 10, 1, 0, 0, 0, 0, 0]), k=1)[0]])
-    xgpf = ' '.join([' -xgced', random.choices(scale_opt, weights=([0, 1, 1, 10, 2, 1, 0, 0, 0, 0]), k=1)[0]])
-    xgaf = ' '.join([' -xga', random.choices(scale_opt, weights=([0, 13, 1, 0, 0, 0, 0, 0, 0, 0]), k=1)[0]])
-    xghf = ' '.join([' -xgh', random.choices(scale_opt, weights=([0, 13, 1, 0, 0, 0, 0, 0, 0, 0]), k=1)[0]])
-    xgtf = ' '.join([' -xgt', random.choices(scale_opt, weights=([0, 1, 5, 10, 1, 0, 0, 0, 0, 0]), k=1)[0]])
-    asrf = ' '.join([' -asr', random.choices(scale_opt, weights=([0, 0, 1, 10, 2, 1, 0, 0, 0, 0]), k=1)[0]])
-    asef = ' '.join([' -ase', random.choices(scale_opt, weights=([0, 0, 1, 10, 2, 1, 0, 0, 0, 0]), k=1)[0]])
-
-    lscale = random.choices([lspf, lsaf, lshf, lstf, ''], weights=([15, 2, 2, 1, 0]), k=1)[0]
-    hmscale = random.choices([hmpf, hmaf, hmhf, hmtf, ''], weights=([15, 2, 2, 1, 0]), k=1)[0]
-    xgscale = random.choices([xgpf, xgaf, xghf, xgtf, ''], weights=([15, 2, 2, 1, 0]), k=1)[0]
-    ascale = random.choices([asrf, asef, ''], weights=([1, 13, 0]), k=1)[0]
-
-    msl = ' '.join([' -msl', str(random.randint(40, 60))])
-    '''
     scale_card = await last_card(cards, 43, 44, 45, 46, 47, 144)
     if scale_card == 43:
         lscale = ' -lsced 4'
@@ -642,16 +562,9 @@ async def createflags(interaction, cards) -> str:
         ascale = ' -ase 2'
 
     sfb = ''
-    # sfb = random.choices([' -sfb', ''], weights=([0, 1]), k=1)[0]
-    # sed = random.choices([' -sed', ''], weights=([13, 1]), k=1)[0]
     scaling = ''.join([lscale, hmscale, xgscale, ascale, msl, sfb, sed])
 
     # ENCOUNTERS
-    '''
-    renc = random.choices(['', ' -res', ' '.join([' -rer', str(random.randint(0, 10))])], weights=([1, 10, 10]), k=1)[0]
-    fenc = random.choices(['', ' '.join([' -fer', str(random.randint(0, 10))])], weights=([1, 13]), k=1)[0]
-    escr = ' -escr 100'
-    '''
     if 40 in cards:
         renc = ' -rer 20'
     else:
@@ -669,27 +582,6 @@ async def createflags(interaction, cards) -> str:
 
     # -----MAGIC-----
     # ESPERS
-    '''
-    esr1 = random.randint(1, 3)
-    esr2 = random.randint(esr1, 5)
-    esr = ' '.join([' -esr', str(esr1), str(esr2)])
-    ess = random.choices(['', esr, ' -esrr', ' -ess', ' -essrr', ' -esrt'], weights=([1, 13, 2, 2, 2, 3]), k=1)[0]
-    ebonus = random.choices(['', ' '.join([' -ebr', str(random.randint(67, 100))]), ' -ebs'], weights=([1, 10, 2]),
-                            k=1)[0]
-    emprp1 = random.randint(75, 100)
-    emprp2 = random.randint(emprp1, 125)
-    emprv1 = random.randint(25, 75)
-    emprv2 = random.randint(emprv1, 99)
-    eer1 = random.randint(6, 12)
-    eer2 = random.randint(eer1, 12)
-    emprp = ' '.join([' -emprp', str(emprp1), str(emprp2)])
-    emprv = ' '.join([' -emprv', str(emprv1), str(emprv2)])
-    emp = random.choices(['', emprp, emprv, ' -emps'], weights=([1, 10, 1, 3]), k=1)[0]
-    eer = ' '.join([' -eer', str(eer1), str(eer2)])
-    eebr = ' '.join([' -eebr', str(random.randint(6, 12))])
-    eeq = random.choices([eer, eebr, ''], weights=([1, 1, 15]), k=1)[0]
-    ems = random.choices(['', ' -ems'], weights=([13, 1]), k=1)[0]
-    '''
     if 85 in cards:
         stesp = ' -stesp 1 1'
     else:
@@ -746,14 +638,6 @@ async def createflags(interaction, cards) -> str:
     espers = ''.join([stesp, ess, el, ebonus, emp, eeq, ems])
 
     # NATURAL MAGIC
-    '''
-    nm1 = random.choices(['', ' -nm1 random'], weights=([0, 1]), k=1)[0]
-    nm2 = random.choices(['', ' -nm2 random'], weights=([0, 1]), k=1)[0]
-    rnl1 = random.choices(['', ' -rnl1'], weights=([0, 1]), k=1)[0]
-    rnl2 = random.choices(['', ' -rnl2'], weights=([0, 1]), k=1)[0]
-    rns1 = random.choices(['', ' -rns1'], weights=([0, 1]), k=1)[0]
-    rns2 = random.choices(['', ' -rns2'], weights=([0, 1]), k=1)[0]
-    '''
     nat_card = await last_card(cards, 76, 77, 78)
     if nat_card == 76:
         nm1 = ''
@@ -817,13 +701,6 @@ async def createflags(interaction, cards) -> str:
 
     # -----ITEMS-----
     # STARTING GOLD/ITEMS
-    '''
-    gp = ' '.join([' -gp', str(random.randint(0, 20000))])
-    smc = ' -smc 3'
-    sws = ' '.join([' -sws', str(random.randint(0, 7))])
-    sfd = ' '.join([' -sfd', str(random.randint(0, 7))])
-    sto = ' '.join([' -sto', str(random.randint(0, 4))])
-    '''
     smc = ' -smc 3'
     start_card = await last_card(cards, 60, 61, 62)
     if start_card == 60:
@@ -849,22 +726,6 @@ async def createflags(interaction, cards) -> str:
     s_inv = ''.join([gp, smc, sfd, sto, sws])
 
     # ITEMS
-    '''
-    ier1 = random.randint(7, 14)
-    ier2 = random.randint(ier1, 14)
-    ier = ' '.join([' -ier', str(ier1), str(ier2)])
-    iebr = ' '.join([' -iebr', str(random.randint(7, 14))])
-    ieor = ' '.join([' -ieor', str(random.randint(33, 100))])
-    iesr = ' '.join([' -iesr', str(random.randint(33, 100))])
-    iequip = random.choices(['', ier, iebr, ieor, iesr], weights=([1, 1, 1, 13, 1]), k=1)[0]
-    ierr1 = random.randint(7, 14)
-    ierr2 = random.randint(ierr1, 14)
-    ierr = ' '.join([' -ierr', str(ierr1), str(ierr2)])
-    ierbr = ' '.join([' -ierbr', str(random.randint(7, 14))])
-    ieror = ' '.join([' -ieror', str(random.randint(33, 100))])
-    iersr = ' '.join([' -iersr', str(random.randint(33, 100))])
-    requip = random.choices(['', ierr, ierbr, ieror, iersr], weights=([1, 1, 1, 13, 1]), k=1)[0]
-    '''
     equip_card = await last_card(cards, 65, 66, 67, 151)
     if equip_card == 65:
         iequip = ' -ieor 100'
@@ -892,15 +753,10 @@ async def createflags(interaction, cards) -> str:
     else:
         csb1 = 5
         csb2 = 13
-    # csb1 = random.randint(1, 32)
-    # csb2 = random.randint(csb1, 32)
     csb = ' '.join([' -csb', str(csb1), str(csb2)])
 
-    # mca = random.choices([' -mca', ''], weights=([1, 0]), k=1)[0]
     mca = ' -mca'
-    # stra = random.choices([' -stra', ''], weights=([1, 0]), k=1)[0]
     stra = ' -stra'
-    # saw = random.choices([' -saw', ''], weights=([1, 0]), k=1)[0]
     saw = ' -saw'
     equips = ''.join([iequip, requip, csb, mca, stra, saw])
 
@@ -985,23 +841,7 @@ async def createflags(interaction, cards) -> str:
         snbr = ' -sebr'
         snes = ''
         snsb = ' -sesb'
-    '''
-    sisr = ' '.join([' -sisr', str(random.randint(20, 40))])
-    shopinv = random.choices(['', sisr, ' -sirt', ' -sie'], weights=([1, 13, 3, 0]), k=1)[0]
-    sprv1 = random.randint(0, 65535)
-    sprv2 = random.randint(sprv1, 65535)
-    sprp1 = random.randint(75, 100)
-    sprp2 = random.randint(sprp1, 125)
-    sprv = ' '.join([' -sprv', str(sprv1), str(sprv2)])
-    sprp = ' '.join([' -sprp', str(sprp1), str(sprp2)])
-    shopprices = random.choices(['', sprv, sprp], weights=([1, 2, 15]), k=1)[0]
-    ssf = random.choices(['', ' -ssf4', ' -ssf8', ' -ssf0'], weights=([13, 1, 1, 0]), k=1)[0]
-    sdm = ' '.join([' -sdm', str(random.randint(4, 5))])
-    npi = random.choices(['', ' -npi'], weights=([0, 1]), k=1)[0]
-    snbr = random.choices(['', ' -snbr'], weights=([13, 1]), k=1)[0]
-    snes = random.choices(['', ' -snes'], weights=([13, 1]), k=1)[0]
-    snsb = random.choices(['', ' -snsb'], weights=([13, 1]), k=1)[0]
-    '''
+
     shops = ''.join([shopinv, shopprices, ssf, sdm, npi, snbr, snes, snsb])
 
     # CHESTS
@@ -1026,50 +866,18 @@ async def createflags(interaction, cards) -> str:
     else:
         chrm = ''
 
-    # ccontents = random.choices(['', ' -ccrt', ' -cce', ' '.join([' -ccsr', str(random.randint(20, 40))])],
-    #                           weights=([1, 3, 0, 13]), k=1)[0]
-    # cms = random.choices(['', ' -cms'], weights=([0, 1]), k=1)[0]
     chests = ''.join([ccontents, cms, chrm])
 
     items = ''.join([s_inv, equips, ir, shops, chests])
 
-    # -----CUSTOM-----
-    # SEE CUSTOM_SPRITES_PORTRAITS.PY
-
     # -----OTHER-----
     # COLISEUM
-    '''
-    co = random.choices(['', ' -cor', ' -cos'], weights=([0, 13, 1]), k=1)[0]
-    cr = random.choices(['', ' -crs', ' -crr'], weights=([0, 1, 13]), k=1)[0]
-    crvr1 = random.randint(30, 50)
-    crvr2 = random.randint(crvr1, 75)
-    visible = random.choices(['', ' '.join([' -crvr', str(crvr1), str(crvr2)])], weights=([0, 1]), k=1)[0]
-    rmenu = random.choices(['', ' -crm'], weights=([1, 13]), k=1)[0]
-    colo = ''.join([co, cr, visible, rmenu])
-    '''
     colo = ' -cor -crr -crvr 50 60 -crm'
 
     # AUCTION HOUSE
-    '''
-    ari = random.choices(['', ' -ari'], weights=([0, 1]), k=1)[0]
-    anca = random.choices(['', ' -anca'], weights=([0, 1]), k=1)[0]
-    adeh = random.choices(['', ' -adeh'], weights=([0, 1]), k=1)[0]
-    ah = ''.join([ari, anca, adeh])
-    '''
     ah = ' -ari -anca -adeh'
 
     # MISC
-    '''
-    asprint = random.choices(['', ' -as'], weights=([0, 1]), k=1)[0]
-    ond = random.choices(['', ' -ond'], weights=([0, 1]), k=1)[0]
-    rr = random.choices(['', ' -rr'], weights=([0, 1]), k=1)[0]
-    scan = random.choices(['', ' -scan'], weights=([1, 0]), k=1)[0]
-    etimers = random.choices(['', ' -etr', ' -etn'], weights=([5, 1, 0]), k=1)[0]
-    ychoices = [' -ymascot', ' -ycreature', ' -yimperial', ' -ymain', ' -yreflect', ' -ystone', ' -ysketch',
-                ' -yrandom', ' -yremove', '']
-    ychoice = random.choices(ychoices, weights=([1, 1, 1, 1, 1, 1, 1, 1, 1, 13]), k=1)[0]
-    flashes = random.choice(['', ' -frm', ' -frw'])
-    '''
     asprint = ' -as'
     ond = ' -ond'
     rr = ' -rr'
@@ -1087,40 +895,37 @@ async def createflags(interaction, cards) -> str:
     misc = ''.join([asprint, ond, rr, scan, etimers, ychoice, flashes, hdmap])
 
     # CHALLENGES
-    # nmc = random.choices(['', ' -nmc'], weights=([1, 5]), k=1)[0]
     nmc = ' -nmc'
     if 147 in cards:
         ame = ' -ame 0'
     else:
         ame = ' -ame 2'
-    # noshoes = random.choices(['', ' -noshoes'], weights=([1, 5]), k=1)[0]
     noshoes = ' -noshoes'
-    # nee = random.choices(['', ' -nee'], weights=([13, 1]), k=1)[0]
     if 129 in cards:
         nee = ' -nee'
     else:
         nee = ''
-    # nil = random.choices(['', ' -nil'], weights=([1, 5]), k=1)[0]
+
     if 130 in cards:
         nil = ' -nil'
     else:
         nil = ''
-    # nfps = random.choices(['', ' -nfps'], weights=([0, 1]), k=1)[0]
+
     if curse_card == 64:
         nfps = ''
     else:
         nfps = ' -nfps'
-    # nu = random.choices(['', ' -nu'], weights=([1, 10]), k=1)[0]
+
     if 84 in cards:
         nu = ''
     else:
         nu = ' -nu'
-    # nfp = random.choices(['', ' -nfce'], weights=([13, 1]), k=1)[0]
+
     if 128 in cards:
         nfp = ' -nfce'
     else:
         nfp = ''
-    pd = random.choices(['', ' -pd'], weights=([1, 0]), k=1)[0]
+
     if 114 in cards:
         pd = ' -pd'
     else:
@@ -1128,16 +933,6 @@ async def createflags(interaction, cards) -> str:
     challenges = ''.join([nmc, ame, noshoes, nee, nil, nfps, nu, nfp, pd])
 
     # BUG FIXES
-    '''
-    fs = random.choices(['', ' -fs'], weights=([0, 1]), k=1)[0]
-    fe = random.choices(['', ' -fe'], weights=([0, 1]), k=1)[0]
-    fvd = random.choices(['', ' -fvd'], weights=([0, 1]), k=1)[0]
-    fr = random.choices(['', ' -fr'], weights=([0, 1]), k=1)[0]
-    fj = random.choices(['', ' -fj'], weights=([0, 1]), k=1)[0]
-    fbs = random.choices(['', ' -fbs'], weights=([0, 1]), k=1)[0]
-    fedc = random.choices(['', ' -fedc'], weights=([0, 1]), k=1)[0]
-    bugfixes = ''.join([fs, fe, fvd, fr, fj, fbs, fedc])
-    '''
     bugfixes = ' -fs -fe -fvd -fr -fj -fbs -fedc -fc'
 
     other = ''.join([colo, ah, challenges, misc, bugfixes])
