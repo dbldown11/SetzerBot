@@ -81,8 +81,7 @@ async def drawcards(interaction):
         new_button = CardButton(label=x[4])
         view.add_item(new_button)
 
-    await interaction.response.send_message(content=f"**{interaction.user.name}**, please select one of these cards:",
+    await interaction.response.send_message(content=f"**{interaction.user.display_name}**, please select one of these cards:",
                                             embeds = embed, view=view)
     await view.wait()
     print(view.chosencard)
-    print('a card done got chose')
