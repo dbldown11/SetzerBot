@@ -247,28 +247,26 @@ async def draftpick(interaction):
             async with conn.cursor() as curs:
                 await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
                 current_drafter = await curs.fetchone()
-    else:
-        current_drafter = None
 
-    while current_drafter['persona'] is not None and current_pick is not None:
-        await botpick(channel)
-        async with asqlite.connect(path) as conn:
-            async with conn.cursor() as curs:
-                await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1", (data['id'],))
-                current_pick = await curs.fetchone()
+        while current_drafter['persona'] is not None:
+            await botpick(channel)
+            async with asqlite.connect(path) as conn:
+                async with conn.cursor() as curs:
+                    await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1", (data['id'],))
+                    current_pick = await curs.fetchone()
 
-                if current_pick is not None:
-                    async with asqlite.connect(path) as conn:
-                        async with conn.cursor() as curs:
-                            await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
-                            current_drafter = await curs.fetchone()
+                    if current_pick is not None:
+                        async with asqlite.connect(path) as conn:
+                            async with conn.cursor() as curs:
+                                await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
+                                current_drafter = await curs.fetchone()
 
-    if current_pick is not None:
         query = (current_pick['drafter_id'],data['id'])
         async with asqlite.connect(path) as conn:
             async with conn.cursor() as curs:
                 await curs.execute("SELECT * FROM drafters WHERE index_id = ? AND draft_id =?", query)
                 current_drafter = await curs.fetchone()
+
     if current_pick == None:
         #fetch the cards in the draft
         #print(f'going to pull all the cards from draft_id {data["id"]}')
