@@ -7,6 +7,7 @@ import random
 from classes.confirm import Confirm
 
 from functions.constants import DATA_PATH
+from functions.botdraftpick import botpick
 
 async def startdraft(interaction) -> dict:
     """
@@ -147,8 +148,76 @@ async def startdraft(interaction) -> dict:
 
     async with asqlite.connect(path) as conn:
         async with conn.cursor() as curs:
+            await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1",
+                               (data['id'],))
+            current_pick = await curs.fetchone()
+
+    async with asqlite.connect(path) as conn:
+        async with conn.cursor() as curs:
             await curs.execute("SELECT * FROM drafters WHERE draft_id = ? AND pick_order = 1", (data['id'],))
             current_drafter = await curs.fetchone()
-    next_up = interaction.guild.get_member(current_drafter["user_id"])
-    await channel.send(f'The first drafter is **{next_up.display_name}**!\n'
-                       f'{next_up.mention}, please make your pick using the `/draftpick` command.')
+
+    #TODO Rethink this here - should loop properly for new drafters vs ai
+    if current_drafter['persona'] == None:
+        next_up = interaction.guild.get_member(current_drafter["user_id"])
+        await channel.send(f'The first drafter is **{next_up.display_name}**!\n'
+                           f'{next_up.mention}, please make your pick using the `/draftpick` command.')
+    else:
+        while current_drafter['persona'] is not None and current_pick is not None:
+            print(f'Current Drafter: {current_drafter}, current pick: {current_pick}; neither should be None')
+            await botpick(channel)
+            # find next drafter
+            async with asqlite.connect(path) as conn:
+                async with conn.cursor() as curs:
+                    await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1",
+                                       (data['id'],))
+                    current_pick = await curs.fetchone()
+
+                    if current_pick is not None:
+                        async with asqlite.connect(path) as conn:
+                            async with conn.cursor() as curs:
+                                await curs.execute("SELECT * FROM drafters WHERE index_id = ?",
+                                                   (current_pick['drafter_id'],))
+                                current_drafter = await curs.fetchone()
+
+        if current_drafter['persona'] == None:
+            next_up = interaction.guild.get_member(current_drafter["user_id"])
+            await channel.send(f'The first non-bot drafter is **{next_up.display_name}**!\n'
+                               f'{next_up.mention}, please make your pick using the `/draftpick` command.')
+        else:
+            #end draft (it was all bots, all the way down)
+            async with asqlite.connect(path) as conn:
+                async with conn.cursor() as curs:
+                    await curs.execute("""SELECT card_id FROM picks WHERE draft_id = ? AND isremoved = 0""",
+                                       (data['id'],))
+                    # card_list = [row['card_id'] for row in await curs.fetchall()]
+                    all_picks = await curs.fetchall()
+                    card_list = [x['card_id'] for x in all_picks]
+                    # print(f'the card_list i pulled from the db is {card_list}')
+            flagstring = await createflags(interaction, card_list)
+
+            async with asqlite.connect(path) as conn:
+                async with conn.cursor() as curs:
+                    await curs.execute("""SELECT DISTINCT cards.name, cards.difficulty FROM cards INNER JOIN picks ON cards.id = picks.card_id 
+                    WHERE picks.draft_id = ? AND cards.difficulty IS NOT NULL AND 
+                    picks.isremoved != 1 AND picks.card_id != 0""", (data['id'],))
+                    difficulty_picks = await curs.fetchall()
+            if difficulty_picks is not None:
+                difficulty_list = [row[1] for row in difficulty_picks]
+                difficulty = sum(difficulty_list)
+            else:
+                difficulty = 0
+            diff_rating = await get_difficulty_rating(difficulty)
+
+            closing_message = f'The draft has ended!\n'
+            closing_message += f'This flagset is estimated to be **{diff_rating}**.'
+            await channel.send(closing_message)
+
+            finish_query = (datetime.datetime.now(), flagstring, channel.name)
+            async with asqlite.connect(path) as conn:
+                async with conn.cursor() as curs:
+                    await curs.execute("""UPDATE drafts SET date_finished = ?, flagstring = ? WHERE raceroom = ?""",
+                                       finish_query)
+                    await conn.commit()
+            await channel.send(f'The flagstring for this draft is:\n```{flagstring}```')
+            return None

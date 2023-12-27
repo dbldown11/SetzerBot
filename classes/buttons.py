@@ -8,7 +8,9 @@ class CardButton(discord.ui.Button):
         self.style = discord.ButtonStyle.primary
 
     async def callback(self,interaction: discord.Interaction):
-        if self.view.author == interaction.user:
+        if interaction == None:
+            self.view.stop()
+        elif self.view.author == interaction.user:
             for x in self.view.children:
                 #print(f'trying to disable {x.id}, its a type {type(x.id)}')
                 x.disabled = True

@@ -33,7 +33,8 @@ async def db_init():
                 "user_id"	INTEGER,
                 "isready"	INTEGER,
                 "pick_order"	INTEGER,
-                "picks_made"	INTEGER
+                "picks_made"	INTEGER,
+                "persona"       INTEGER
                 );""")
 
             # create drafts table
@@ -61,6 +62,15 @@ async def db_init():
                 "pick_options"  TEXT,
                 "removed_card"	INTEGER,
                 "isremoved"	INTEGER
+                );""")
+
+            await cursor.execute("""CREATE TABLE IF NOT EXISTS "personas" (
+                "index_id"	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                "name"	TEXT,
+                "bias" TEXT,
+                "rarity_bias" INTEGER,
+                "fav_cards"	TEXT,
+                "fav_quote" TEXT
                 );""")
 
             await conn.commit()
