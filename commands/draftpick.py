@@ -241,11 +241,14 @@ async def draftpick(interaction):
             await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1", (data['id'],))
             current_pick = await curs.fetchone()
 
+    if current_pick is not None:
     #see if they're a bot
-    async with asqlite.connect(path) as conn:
-        async with conn.cursor() as curs:
-            await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
-            current_drafter = await curs.fetchone()
+        async with asqlite.connect(path) as conn:
+            async with conn.cursor() as curs:
+                await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
+                current_drafter = await curs.fetchone()
+    else:
+        current_drafter = None
 
     while current_drafter['persona'] is not None and current_pick is not None:
         await botpick(channel)
