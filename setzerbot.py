@@ -5,15 +5,17 @@ from discord import app_commands
 from discord.ext import commands
 
 from dotenv import load_dotenv
-from typing import Literal
+from typing import Literal, Optional
 from commands.drawcards import drawcards
 from commands.newdraft import newdraft
 from commands.joindraft import joindraft
+from commands.addbotdrafter import addbotdrafter
 from commands.startdraft import startdraft
 from commands.canceldraft import canceldraft
 from commands.draftpick import draftpick
 from commands.showpicks import showpicks
 from commands.updatedeck import updatedeck
+from commands.updatepersonas import updatepersonas
 from commands.showhelp import showhelp
 
 from commands.br_join import br_join
@@ -43,6 +45,7 @@ intents =  discord.Intents.default()
 intents.message_content = True
 intents.members = True
 token = os.getenv('DISCORD_TOKEN')
+guild_id = os.getenv('GUILD_ID')
 
 class bot(discord.Client):
     def __int__(self):
@@ -54,7 +57,7 @@ class bot(discord.Client):
         await db_init_br()
 
     async def on_ready(self):
-        # await tree.sync(guild=discord.Object(id=guild_id))
+        #await tree.sync()
 
         print("My life is a chip in your pile! Ante up! ")
 
@@ -86,18 +89,27 @@ async def showdeckcommand(interaction: discord.Interaction):
 @app_commands.describe(
     order='The order in which drafters will draft each round (default: round)'
 )
+@app_commands.describe(
+    bots='The number of automated bot drafters to be added to the draft (default: 0, min: 0, max: 14)'
+)
 #@app_commands.describe(
 #    racename='The unique string for a WC raceroom (i.e. ff6wc-XXXXXX-async). Leave blank if not for an existing race.'
 #)
 async def newdraftcommand(interaction: discord.Interaction, drafters: app_commands.Range[int, 1, 25] = 4,
                           picks: app_commands.Range[int, 1, 25] = 12, cards: app_commands.Range[int, 1, 5] = 3,
-                          order: Literal['round','snake','random'] = 'round'):
-    args = {'drafters': drafters, 'picks': picks, 'cards': cards, 'order': order}
+                          order: Literal['round','snake','random'] = 'round', bots: app_commands.Range[int, 0, 14] = 0):
+    args = {'drafters': drafters, 'picks': picks, 'cards': cards, 'order': order, "bots": bots}
     await newdraft(interaction, args)
 
 @tree.command(name="joindraft", description="Join an ongoing draft in the current raceroom")
 async def joindraftcommand(interaction: discord.Interaction):
     await joindraft(interaction)
+
+@tree.command(name="addbotdrafter", description="Add a bot-operated AI drafter to the current draft")
+async def addbotdraftercommand(interaction: discord.Interaction):
+    await addbotdrafter(interaction)
+    if not interaction.response.is_done():
+        await interaction.delete_original_response()
 
 @tree.command(name="startdraft", description="Begin a draft in the current raceroom")
 async def startdraftcommand(interaction: discord.Interaction):
@@ -115,6 +127,13 @@ async def showpickscommand(interaction: discord.Interaction):
 async def updatedeckcommand(interaction: discord.Interaction, deck_csv: discord.Attachment):
     if isAdmin(interaction.user):
         await updatedeck(interaction,deck_csv)
+    else:
+        await interaction.response.send_message('Sorry, but that command is restricted to SetzerBot admin users only.',ephemeral=True)
+
+@tree.command(name="updatepersonas", description="(Admin Only) Update the personas used for bot drafters")
+async def updatepersonascommand(interaction: discord.Interaction, personas_csv: discord.Attachment):
+    if isAdmin(interaction.user):
+        await updatepersonas(interaction,personas_csv)
     else:
         await interaction.response.send_message('Sorry, but that command is restricted to SetzerBot admin users only.',ephemeral=True)
 
@@ -322,69 +341,4 @@ async def updatedeckcommand(interaction: discord.Interaction, deck_csv: discord.
 # Adds the setseed commands to the command tree
 tree.add_command(br_group)
 
-
-
 client.run(token)
-
-#TODO Make specific support for Blackjack Battle Royale
-#Limit to one pick per week (reset picks at X time/day)
-#Resolve pick conflicts
-#Command to show current active cards
-
-#TODO Start an event draft session
-# Args: flagstring, picks
-# Take a flagstring as input (the starting set) - check that it's valid
-# Starts a new draft session - players need to /joindraft?
-
-#TODO Import/export a draft string
-#Long encrypted(?) string that summarizes what cards were picked in what order
-
-#TODO Ghost drafters if someone wants to solo draft with others
-#TODO Extra options for newdraft: nocalmness, alwayscalmness, norarity, exclude categories, random exclude
-#TODO User-created draft order
-
-#TODO Mulligans (discard choices for choices -1, random topdeck)
-
-'''
-command
-/br help
--> shows all the commands for players (and the admin commands for admins)
-
-/br join - DONE
--> adds player to the players list, gives them the BR role
-
-/br assign (args) [admin] DONE
--> adds the five players chosen to the given group, gives them roles
-
-/br remove ??
--> removes a player from the chosen group (pre-start only)
-
-/brdemote X [admin] DONE
--> sets demoted and recently_demoted to true for a group member
-
-/br pick DONE
-
-/br makegroups ?
-
-/br undemote ??
-
-/br newweek
-
-/br startweek [admin] DONE-ish
--> opens draft picks for the new week
-
-/br groupstatus [admin]
--> returns how many people still need to pick in the current group
-
-/br allgroupstatus [admin]
--> returns how many people still need to pick in all groups
-
-/br addcards (args) [admin]
--> adds the cards selected to the group's picks (player_id = null)
-
-/br removeplayer (player)
--> removes a player from their current group
-
-/br showflags DONE
--> shows the most recent completed week's flagstring for a group (the player's group if none provided, error if none and player not in a group)
-'''

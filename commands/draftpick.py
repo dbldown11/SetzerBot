@@ -12,6 +12,7 @@ from classes.calmness import CalmnessView
 from commands.createflags import createflags
 from functions.stringfunctions import int_list_to_string,string_to_int_list
 from functions.get_difficulty_rating import get_difficulty_rating
+from functions.botdraftpick import botpick
 
 from functions.constants import DATA_PATH
 
@@ -166,7 +167,7 @@ async def draftpick(interaction):
         new_button = CardButton(label=x[4])
         view.add_item(new_button)
 
-    await interaction.response.send_message(content=f"**{interaction.user.name}**, please select one of these cards:",
+    await interaction.response.send_message(content=f"**{interaction.user.display_name}**, please select one of these cards:",
                                             embeds=embed, view=view)
     await view.wait()
 
@@ -185,7 +186,7 @@ async def draftpick(interaction):
             await interaction.followup.send(content='A card has already been chosen for that pick.', ephemeral=True)
             return None
 
-        await channel.send(f'**{interaction.user.name}** has selected **{view.chosencard}**!')
+        await channel.send(f'**{interaction.user.display_name}** has selected **{view.chosencard}**!')
         if view.chosencard == 'Calmness':
             chosen_card_id = 0
             new_pick_data = (0, current_pick['index_id'])
@@ -239,6 +240,25 @@ async def draftpick(interaction):
         async with conn.cursor() as curs:
             await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1", (data['id'],))
             current_pick = await curs.fetchone()
+
+    #see if they're a bot
+    async with asqlite.connect(path) as conn:
+        async with conn.cursor() as curs:
+            await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
+            current_drafter = await curs.fetchone()
+
+    while current_drafter['persona'] is not None and current_pick is not None:
+        await botpick(channel)
+        async with asqlite.connect(path) as conn:
+            async with conn.cursor() as curs:
+                await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1", (data['id'],))
+                current_pick = await curs.fetchone()
+
+                if current_pick is not None:
+                    async with asqlite.connect(path) as conn:
+                        async with conn.cursor() as curs:
+                            await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
+                            current_drafter = await curs.fetchone()
 
     if current_pick is not None:
         query = (current_pick['drafter_id'],data['id'])

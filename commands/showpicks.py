@@ -68,22 +68,32 @@ async def showpicks(interaction) -> dict:
     for pick in all_picks:
         count_pick += 1
         drafter_user_id = [x['user_id'] for x in drafters if x['index_id'] == pick['drafter_id']]
-        drafter_name = interaction.guild.get_member(drafter_user_id[0])
+        if drafter_user_id[0] is None:
+            persona_id = [x['persona'] for x in drafters if x['index_id'] == pick['drafter_id']]
+            async with asqlite.connect(path) as conn:
+                async with conn.cursor() as curs:
+                    await curs.execute("""SELECT name FROM personas WHERE id = ?""",(persona_id[0],))
+                    drafter_row = await curs.fetchone()
+                    drafter_name = drafter_row[0] + " (Bot)"
+                    await curs.close()
+        else:
+            drafter_member = interaction.guild.get_member(drafter_user_id[0])
+            drafter_name = drafter_member.display_name
         pick_number = pick['pick_number']
         if pick['card_id'] is not None:
             if pick['card_id'] == 0:
                 removed_card_id = [x['card_id'] for x in all_picks if x['pick_number'] == pick['removed_card']]
                 removed_card_name = [x['name'] for x in card_data if x['id'] == removed_card_id[0]]
-                info_string += f'**Pick #{pick_number}** - {drafter_name.display_name} selected **Calmness** and removed Pick #{pick["removed_card"]} ({removed_card_name[0]})\n'
+                info_string += f'**Pick #{pick_number}** - {drafter_name} selected **Calmness** and removed Pick #{pick["removed_card"]} ({removed_card_name[0]})\n'
             else:
                 card_name = [x['name'] for x in card_data if x['id'] == pick['card_id']]
                 card_desc = [x['desc'] for x in card_data if x['id'] == pick['card_id']]
                 if pick['isremoved'] == 0:
-                    info_string += f'**Pick #{pick_number}** - {drafter_name.display_name} selected **{card_name[0]}** *({card_desc[0]})*\n'
+                    info_string += f'**Pick #{pick_number}** - {drafter_name} selected **{card_name[0]}** *({card_desc[0]})*\n'
                 else:
-                    info_string += f'**Pick #{pick_number}** - ~~{drafter_name.display_name} selected **{card_name[0]}** *({card_desc[0]})*~~ :no_entry_sign: Removed by Calmness\n'
+                    info_string += f'**Pick #{pick_number}** - ~~{drafter_name} selected **{card_name[0]}** *({card_desc[0]})*~~ :no_entry_sign: Removed by Calmness\n'
         else:
-            info_string += f'**Pick #{pick_number}** - To be selected by {drafter_name.display_name}\n'
+            info_string += f'**Pick #{pick_number}** - To be selected by {drafter_name}\n'
         if count_pick % 10 == 0:
             await interaction.followup.send(info_string)
             info_string = ''
