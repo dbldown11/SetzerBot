@@ -164,38 +164,39 @@ async def botpick(channel):
     #yeti mode
     if final_pick is None:
         if current_persona['bias'] == 'random':
-            return random.choice(cards)
+            final_pick =  random.choice(cards)
 
-        # Define difficulty order based on persona's bias
-        difficulty_order = {'hard': [2, 1, 0, -1, -2], 'medium': [0, -1, 1, -2, 2], 'easy': [-2, -1, 0, 1, 2]}[
-            current_persona['bias']]
+        else:
+            # Define difficulty order based on persona's bias
+            difficulty_order = {'hard': [2, 1, 0, -1, -2], 'medium': [0, -1, 1, -2, 2], 'easy': [-2, -1, 0, 1, 2]}[
+                current_persona['bias']]
 
-        # Sort the cards based on the persona's biases and shuffle cards with equal weight
-        print(f"{current_persona['name']}'s rarity bias is {current_persona['rarity_bias']}")
-        sorted_cards = sorted(cards, key=lambda card: (
-            card['rarity'] if current_persona['rarity_bias'] == 1 else 0,
-            difficulty_order.index(card['difficulty']),
-            card['difficulty']
-        ))
+            # Sort the cards based on the persona's biases and shuffle cards with equal weight
+            print(f"{current_persona['name']}'s rarity bias is {current_persona['rarity_bias']}")
+            sorted_cards = sorted(cards, key=lambda card: (
+                card['rarity'] if current_persona['rarity_bias'] == 1 else 0,
+                difficulty_order.index(card['difficulty']),
+                card['difficulty']
+            ))
 
-        print(f'{current_persona["name"]} has prioritized their picks in this order:')
-        for x in sorted_cards:
-            # 1 second pause for effect
-            await asyncio.sleep(1)
-            print(f'{x["name"]}, with rarity {x["rarity"]} and difficulty {x["difficulty"]}')
-        # Select the first card with the highest priority (deterministic selection)
-        final_pick = next(
-            (card for card in sorted_cards if card['rarity'] == sorted_cards[0]['rarity']),
-            None
-        )
+            print(f'{current_persona["name"]} has prioritized their picks in this order:')
+            for x in sorted_cards:
+                # 1 second pause for effect
+                await asyncio.sleep(1)
+                print(f'{x["name"]}, with rarity {x["rarity"]} and difficulty {x["difficulty"]}')
+            # Select the first card with the highest priority (deterministic selection)
+            final_pick = next(
+                (card for card in sorted_cards if card['rarity'] == sorted_cards[0]['rarity']),
+                None
+            )
 
-        # If there are multiple top-priority cards with the same difficulty, randomly choose one
-        if final_pick:
-            top_priority_cards_same_difficulty = [
-                card for card in sorted_cards if
-                card['rarity'] == sorted_cards[0]['rarity'] and card['difficulty'] == final_pick['difficulty']
-            ]
-            final_pick = random.choice(top_priority_cards_same_difficulty)
+            # If there are multiple top-priority cards with the same difficulty, randomly choose one
+            if final_pick:
+                top_priority_cards_same_difficulty = [
+                    card for card in sorted_cards if
+                    card['rarity'] == sorted_cards[0]['rarity'] and card['difficulty'] == final_pick['difficulty']
+                ]
+                final_pick = random.choice(top_priority_cards_same_difficulty)
 
     #record the pick in the dB
     async with asqlite.connect(path) as conn:
