@@ -106,7 +106,7 @@ async def startdraft(interaction) -> dict:
             pick_num += 1
     elif data['draft_order'] == 'snake':
         while pick_num <= data['total_picks']:
-            if ((pick_num-1)//len(ordered_list)) % 2 == 0:
+            if ((pick_num-1)//len(ordered_list)) % 2 != 0:
                 pick_list.append(ordered_list[-pick_num % len(ordered_list)])
                 pick_num += 1
             else:
