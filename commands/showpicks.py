@@ -67,6 +67,7 @@ async def showpicks(interaction) -> dict:
     count_pick = 0
     for pick in all_picks:
         count_pick += 1
+        new_page = False
         drafter_user_id = [x['user_id'] for x in drafters if x['index_id'] == pick['drafter_id']]
         if drafter_user_id[0] is None:
             persona_id = [x['persona'] for x in drafters if x['index_id'] == pick['drafter_id']]
@@ -94,7 +95,7 @@ async def showpicks(interaction) -> dict:
                     info_string += f'**Pick #{pick_number}** - ~~{drafter_name} selected **{card_name[0]}** *({card_desc[0]})*~~ :no_entry_sign: Removed by Calmness\n'
         else:
             info_string += f'**Pick #{pick_number}** - To be selected by {drafter_name}\n'
-        if count_pick % 10 == 0:
+        if len(info_string) > 1600:
             await interaction.followup.send(info_string)
             info_string = ''
 
