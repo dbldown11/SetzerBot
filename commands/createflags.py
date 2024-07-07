@@ -82,7 +82,7 @@ async def createflags(interaction, cards) -> str:
         obj_count += 1
     elif ktcard == 139:
         kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.1.1.10.18.18'])
-        ktespers = 9 # this is a proxy for actual esper account so that wide open horizon works with overflow skip
+        ktespers = 12 # this is a proxy for actual esper account so that wide open horizon works with overflow skip
         obj_count += 1
     else:
         kt = '.'.join(
