@@ -261,6 +261,7 @@ async def draftpick(interaction):
                                 await curs.execute("SELECT * FROM drafters WHERE index_id = ?", (current_pick['drafter_id'],))
                                 current_drafter = await curs.fetchone()
 
+    if current_pick is not None:
         query = (current_pick['drafter_id'],data['id'])
         async with asqlite.connect(path) as conn:
             async with conn.cursor() as curs:
