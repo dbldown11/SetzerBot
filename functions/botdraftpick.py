@@ -38,7 +38,6 @@ async def botpick(channel):
             current_pick = await curs.fetchone()
             if current_pick is None:
                 print('current pick is none')
-                return None
 
     #get persona info
     async with asqlite.connect(path) as conn:
