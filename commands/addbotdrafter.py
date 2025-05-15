@@ -101,7 +101,10 @@ async def addbotdrafter(interaction) -> dict:
             await curs.execute("""INSERT INTO drafters (draft_id, user_id, isready, picks_made, persona) VALUES (?, ?, ?, ?, ?);""", new_drafter_data)
             await conn.commit()
 
-    await channel.send(f'{persona_drafter_data["name"]} (AI) has joined the draft. There are now {len(drafter_data)+1} drafters.')
+    if interaction.response.is_done():
+        await channel.send(f'{persona_drafter_data["name"]} (AI) has joined the draft. There are now {len(drafter_data)+1} drafters.')
+    else:
+        await interaction.response.send_message(f'{persona_drafter_data["name"]} (AI) has joined the draft. There are now {len(drafter_data)+1} drafters.')
 
     if len(drafter_data)+1 >= this_draft['max_drafters']:
         await channel.send('The draft for this race room is now full! The draft will begin when the draft creator uses the `/startdraft` command.')

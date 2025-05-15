@@ -8,6 +8,8 @@ from classes.confirm import Confirm
 
 from functions.constants import DATA_PATH
 from functions.botdraftpick import botpick
+from commands.createflags import createflags
+from functions.get_difficulty_rating import get_difficulty_rating
 
 async def startdraft(interaction) -> dict:
     """
@@ -112,7 +114,7 @@ async def startdraft(interaction) -> dict:
             else:
                 pick_list.append(ordered_list[pick_num % len(ordered_list) - 1])
                 pick_num += 1
-    elif data['draft_order'] == 'random':
+    elif data['draft_order'] == 'chaos':
         while pick_num <= data['total_picks']:
             pick_list.append(ordered_list[random.randint(0,len(ordered_list)-1)])
             pick_num += 1
@@ -154,7 +156,7 @@ async def startdraft(interaction) -> dict:
 
     async with asqlite.connect(path) as conn:
         async with conn.cursor() as curs:
-            await curs.execute("SELECT * FROM drafters WHERE draft_id = ? AND pick_order = 1", (data['id'],))
+            await curs.execute("SELECT * FROM drafters WHERE draft_id = ? AND index_id = ?", (data['id'],current_pick['drafter_id']))
             current_drafter = await curs.fetchone()
 
     #TODO Rethink this here - should loop properly for new drafters vs ai

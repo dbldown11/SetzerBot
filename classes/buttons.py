@@ -5,7 +5,10 @@ import discord
 class CardButton(discord.ui.Button):
     def __init__(self, label: str):
         super().__init__(label=label)
-        self.style = discord.ButtonStyle.primary
+        if label == 'Random Card' or (label.startswith('Draw') and label.endswith('New Cards')):
+            self.style = discord.ButtonStyle.danger
+        else:
+            self.style = discord.ButtonStyle.primary
 
     async def callback(self,interaction: discord.Interaction):
         if interaction == None:

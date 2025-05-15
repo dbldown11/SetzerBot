@@ -43,6 +43,7 @@ async def drawcards(interaction):
     has_drawn_removal = False
     while len(cards) < 3:
         current_categories = [i[1] for i in cards]
+        # remove cards if singleton or noredeal
         new_card = random.choices(data, weights = ([int(i[3]) for i in data]))[0]
         #if has_drawn_removal == False and new_card[4] == '4' and random.random() < 0.1:
         if has_drawn_removal == False and random.random() < 0.05:

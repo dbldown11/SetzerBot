@@ -3,6 +3,7 @@ import random
 from functions.last_card import last_card
 from functions.remove_card import remove_card
 from functions.remove_earliest_duplicates import remove_earliest_duplicates
+from functions.stringfunctions import shuffle_list
 
 
 async def createflags(interaction, cards) -> str:
@@ -38,7 +39,7 @@ async def createflags(interaction, cards) -> str:
     settings = ''.join([mode, slog])
 
     # KEFKA'S TOWER & STATUE SKIP
-    ktcard = await last_card(cards, 50, 51, 52, 53, 137, 138, 139)
+    ktcard = await last_card(cards, 50, 51, 52, 53, 137, 138, 139, 174, 175, 176)
     ktchars = 6
     ktespers = 9
     ktdragons = 0
@@ -84,12 +85,29 @@ async def createflags(interaction, cards) -> str:
         kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.1.1.10.18.18'])
         ktespers = 12 # this is a proxy for actual esper account so that wide open horizon works with overflow skip
         obj_count += 1
+    elif ktcard == 174:
+        kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.3.3.2.6.6.4.10.10.12.4'])
+        ktchars = 6
+        ktespers = 10
+        obj_count += 1
+    elif ktcard == 175:
+        kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.2.2.2.8.8.4.10.10.6.5.5.8.18.18'])
+        ktchars = 8
+        ktespers = 10
+        ktdragons = 5
+        ktbosses = 18
+        obj_count += 1
+    elif ktcard == 176:
+        kt = '.'.join([' -' + obj_prefix[obj_count] + ' 2.1.1.2.3.3'])
+        ktchars = 3
+        ktespers = 0
+        obj_count += 1
     else:
         kt = '.'.join(
             [' -' + obj_prefix[obj_count] + ' 2.2.2.2', str(ktchars), str(ktchars), '4', str(ktespers), str(ktespers)])
         obj_count += 1
 
-    skipcard = await last_card(cards, 54, 55, 56, 57, 58, 59)
+    skipcard = await last_card(cards, 54, 55, 56, 57, 58, 59,177,178,179,180)
     if skipcard == 54:
         kt += '.'.join(
             [' -' + obj_prefix[obj_count] + ' 3.1.1.2', str(ktchars + 3), str(ktchars + 3), '4', str(ktespers + 3),
@@ -110,6 +128,18 @@ async def createflags(interaction, cards) -> str:
         obj_count += 1
     elif skipcard == 59:
         kt += '.'.join([' -' + obj_prefix[obj_count] + ' 3.3.3.3.r.5.r.7.r.11.r.9.r'])
+        obj_count += 1
+    elif skipcard == 177:
+        kt += '.'.join([' -' + obj_prefix[obj_count] + ' 3.1.1.6.4.4'])
+        obj_count += 1
+    elif skipcard == 178:
+        kt += '.'.join([' -' + obj_prefix[obj_count] + ' 3.1.1.6.6.6'])
+        obj_count += 1
+    elif skipcard == 179:
+        kt += '.'.join([' -' + obj_prefix[obj_count] + ' 3.1.1.12.12.12.13.12.14'])
+        obj_count += 1
+    elif skipcard == 180:
+        kt += '.'.join([' -' + obj_prefix[obj_count] + ' 3.2.2.9.31.9.32.9.33.9.34'])
         obj_count += 1
 
     # Objective Cards
@@ -193,6 +223,24 @@ async def createflags(interaction, cards) -> str:
         obj_count += 1
         objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 46.10.10.1.1.12.9'])
         obj_count += 1
+    if 194 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 59.2.2.12.5.12.1'])
+        obj_count += 1
+    if 195 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 30.8.8.2.2.12.5.12.1'])
+        obj_count += 1
+    if 196 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 59.1.1.6.4.4'])
+        obj_count += 1
+    if 197 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 30.8.8.1.1.6.4.4'])
+        obj_count += 1
+    if 198 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 26.8.8.1.1.6.4.4'])
+        obj_count += 1
+    if 199 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 68.2.2.12.5.12.1'])
+        obj_count += 1
 
     # Boss/Enemy/Dragon Level Boosts
     if 36 in cards:
@@ -227,6 +275,28 @@ async def createflags(interaction, cards) -> str:
     if 149 in cards:
         objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 64.0.0'])
         obj_count += 1
+    if 200 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 22.10.10.1.1.11.52'])
+        obj_count += 1
+    if 201 in cards:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 23.1.1.1.1.6.1.1'])
+        obj_count += 1
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 23.1.1.1.1.6.2.2'])
+        obj_count += 1
+
+    #global character stat adjustments
+    adj_card = await last_card(cards, 163, 164)
+    if adj_card == 163:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 45.10.10.0.0'])
+        obj_count += 1
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 48.-10.-10.0.0'])
+        obj_count += 1
+    elif adj_card == 164:
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 45.-10.-10.0.0'])
+        obj_count += 1
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 48.10.10.0.0'])
+        obj_count += 1
+
 
     game = ''.join([settings, kt, objectives])
 
@@ -241,22 +311,31 @@ async def createflags(interaction, cards) -> str:
     else:
         party_size = 3
 
+    # print(f'DEBUG Party size card: {party_size_card}, interpreted party size: {party_size}')
+
     # build a list of all party member cards
-    print(f'The cards in this draft are: {cards}')
+    # print(f'DEBUG The cards in this draft are: {cards}')
     party_cards = []
     for num in cards:
         if 1 <= num <= 26:
             party_cards.append(num)
-    print(f'The party-related cards in this draft are: {party_cards}')
+        if 208 <= num <= 231:
+            party_cards.append(num)
+    # print(f'DEBUG The party-related cards in this draft are: {party_cards}')
 
-    # go through the list of party member cards and remove the older of any conflicting multiples
+    # go through the list of party member cards and remove the earliest of any conflicting multiples
     if len(party_cards) > 1:
         for cardnum in range(1, 13):
-            if cardnum in party_cards and (cardnum + 14) in party_cards:
-                if await last_card(party_cards, cardnum, cardnum + 14) == cardnum:
-                    party_cards = remove_card(party_cards, cardnum + 14)
-                elif await last_card(party_cards, cardnum, cardnum + 14) == (cardnum + 14):
-                    party_cards = remove_card(party_cards, cardnum)
+            variants = [cardnum, cardnum + 14, cardnum + 207, cardnum + 219]
+            present = [v for v in variants if v in party_cards]
+
+            if len(present) > 1:
+                # Ask which of the present ones was added last
+                last = await last_card(party_cards, *present)
+                # Remove all others
+                for v in present:
+                    if v != last:
+                        party_cards = remove_card(party_cards, v)
 
     #remove the earliest of any duplicate cards
     party_cards = remove_earliest_duplicates(party_cards)
@@ -265,9 +344,9 @@ async def createflags(interaction, cards) -> str:
     if len(party_cards) > party_size:
         party_cards = party_cards[(len(party_cards) - party_size):]
 
-    print(f'After removing and downsizing to party size cap and removing duplicates, the party-related cards in this draft are: {party_cards}')
+    # print(f'DEBUG After removing and downsizing to party size cap and removing duplicates, the party-related cards in this draft are: {party_cards}')
 
-    sc_list = []
+    '''sc_list = []
     for count, x in enumerate(party_cards):
         if x == 1 or x == 15:
             sc_list.append(''.join([' -sc', str(count + 1), ' terra']))
@@ -299,7 +378,43 @@ async def createflags(interaction, cards) -> str:
             sc_list.append(''.join([' -sc', str(count + 1), ' umaro']))
 
     while len(sc_list) < party_size:
-        sc_list.append(''.join([' -sc', str(len(sc_list) + 1), ' random']))
+        sc_list.append(''.join([' -sc', str(len(sc_list) + 1), ' random']))'''
+
+    # Define the character IDs
+    character_map = {
+        'terra': [1, 15, 208, 220],
+        'locke': [2, 16, 209, 221],
+        'cyan': [3, 17, 210, 222],
+        'shadow': [4, 18, 211, 223],
+        'edgar': [5, 19, 212, 224],
+        'sabin': [6, 20, 213, 225],
+        'celes': [7, 21, 214, 226],
+        'strago': [8, 22, 215, 227],
+        'relm': [9, 23, 216, 228],
+        'setzer': [10, 24, 217, 229],
+        'mog': [11, 25, 218, 230],
+        'gau': [12, 26, 219, 231],
+        'gogo': [13],
+        'umaro': [14],
+    }
+
+    # Reverse the map so you can look up by card ID
+    id_to_character = {
+        card_id: name
+        for name, ids in character_map.items()
+        for card_id in ids
+    }
+
+    # Build sc_list
+    sc_list = []
+    for count, x in enumerate(party_cards):
+        if x in id_to_character:
+            sc_list.append(f' -sc{count + 1} {id_to_character[x]}')
+
+    # print(f'DEBUG sc_list before filling: {sc_list}, target party_size: {party_size}')
+
+    while len(sc_list) < party_size:
+        sc_list.append(f' -sc{len(sc_list) + 1} random')
 
     sparty = ''.join(sc_list)
 
@@ -327,15 +442,27 @@ async def createflags(interaction, cards) -> str:
     # STEAL CHANCES
     steal = ' -sch'
 
+    # STEAL/DROP RANDOMIZATION
+    drops_card = await last_card(cards, 167, 168)
+    if drops_card == 167:
+        drops = ' -ssd 0'
+    elif drops_card == 168:
+        drops = ' -ssd 100'
+    else:
+        drops = ''
+
     # SKETCH/CONTROL
     sketch = ' -scis'
 
     # CHARACTERS
-    sal = ' -sal'
+    if 202 in cards:
+        sal = ''
+    else:
+        sal = ' -sal'
     sn = ''
     eu = ' -eu'
 
-    stats_card = await last_card(cards, 29, 30, 31, 32, 33)
+    stats_card = await last_card(cards, 29, 30, 31, 32, 33,161,162,165,166)
     if stats_card == 29:
         csrp1 = 60
         csrp2 = 90
@@ -351,6 +478,18 @@ async def createflags(interaction, cards) -> str:
     elif stats_card == 33:
         csrp1 = 10
         csrp2 = 200
+    elif stats_card == 161:
+        csrp1 = 60
+        csrp2 = 140
+    elif stats_card == 162:
+        csrp1 = 100
+        csrp2 = 100
+    elif stats_card == 165:
+        csrp1 = 125
+        csrp2 = 125
+    elif stats_card == 166:
+        csrp1 = 75
+        csrp2 = 75
     else:
         csrp1 = 85
         csrp2 = 120
@@ -360,15 +499,93 @@ async def createflags(interaction, cards) -> str:
 
     # COMMANDS
     scc = ''
-    command_card = await last_card(cards, 86, 87, 88, 89)
+    command_card = await last_card(cards, 86, 87, 88, 89, 187, 188, 189, 190, 191, 192, 193)
     if command_card == 88:
         command_list = ['03', '05', '07', '08', '09', '10', '11', '12', '13', '15', '19', '16', '97']
     elif command_card == 89:
         command_list = ['99', '99', '99', '99', '99', '99', '99', '99', '99', '99', '99', '99', '99']
+    elif command_card == 187:
+        command_list = []
+        command_options = ['03','05','09','10','11','26','07','16']
+        used_03 = False
+        allow_03 = 1 not in party_cards
+
+        for command in range(13):
+            available_options = command_options.copy()
+            # Remove Morph (03) if already been used or if not allowed
+            if used_03 or not allow_03:
+                available_options.remove('03')
+
+            # Select from available options
+            choice = random.choice(available_options)
+
+            # Mark Morph as used if selected
+            if choice == '03':
+                used_03 = True
+
+            command_list.append(choice)
+    elif command_card == 188:
+        command_list = []
+        command_options = ['10','19','26','12','29','16','27','13','15','23']
+        for command in range(13):
+            command_list.append(random.choice(command_options))
+    elif command_card == 189:
+        command_list = []
+        command_options = ['29','11','27','08']
+        for command in range(13):
+            command_list.append(random.choice(command_options))
+    elif command_card == 190:
+        command_list = ['22', '22', '22', '22', '22', '22', '22', '22', '22', '22', '22', '22', '22']
+    elif command_card == 191:
+        command_list = []
+        command_options = ['14','29','03','11','13']
+        used_03 = False
+        allow_03 = 1 not in party_cards
+
+        for command in range(13):
+            available_options = command_options.copy()
+            # Remove Morph (03) if already been used or if not allowed
+            if used_03 or not allow_03:
+                available_options.remove('03')
+
+            # Select from available options
+            choice = random.choice(available_options)
+
+            # Mark Morph as used if selected
+            if choice == '03':
+                used_03 = True
+
+            command_list.append(choice)
+    elif command_card == 192:
+        command_list = []
+        command_options = ['10','06','22','05','07','08','09']
+        for command in range(13):
+            command_list.append(random.choice(command_options))
+    elif command_card == 193:
+        command_list = []
+        possible_options = ['03','05','06','07','08','09','10','11','12','13','14','15','16','19','22','23','24','26','27','29']
+        command_options = random.sample(possible_options,4)
+        used_03 = False
+        allow_03 = 1 not in party_cards
+        for command in range(13):
+            available_options = command_options.copy()
+            # Remove Morph (03) if already been used or if not allowed
+            if used_03 or not allow_03:
+                available_options.remove('03')
+
+            # Select from available options
+            choice = random.choice(available_options)
+
+            # Mark Morph as used if selected
+            if choice == '03':
+                used_03 = True
+
+            command_list.append(choice)
     else:
         command_list = ['98', '98', '98', '98', '98', '98', '98', '98', '98', '98', '98', '98', '98']
+
     # hard code commands based on party cards
-    if 1 in party_cards:
+    '''if 1 in party_cards:
         command_list[0] = '03'
     if 2 in party_cards:
         command_list[1] = '05'
@@ -416,6 +633,29 @@ async def createflags(interaction, cards) -> str:
         command_list[10] = '22'
     if 26 in party_cards:
         command_list[11] = '06'
+    '''
+
+    # Map each card ID to a (slot_index, command_value)
+    card_to_command = {
+        1: (0, '03'), 15: (0, '29'), 208: (0, '12'), 220: (0, '16'),  # Terra
+        2: (1, '05'), 16: (1, '06'), 209: (1, '08'), 221: (1, '07'),  # Locke
+        3: (2, '07'), 17: (2, '08'), 210: (2, '22'), 222: (2, '16'),  # Cyan
+        4: (3, '08'), 18: (3, '07'), 211: (3, '10'), 223: (3, '16'),  # Shadow
+        5: (4, '09'), 19: (4, '22'), 212: (4, '29'), 224: (4, '08'),  # Edgar
+        6: (5, '10'), 20: (5, '07'), 213: (5, '09'), 225: (5, '16'),  # Sabin
+        7: (6, '11'), 21: (6, '27'), 214: (6, '07'), 226: (6, '29'),  # Celes
+        8: (7, '12'), 22: (7, '26'), 215: (7, '10'), 227: (7, '27'),  # Strago
+        9: (8, '13'), 23: (8, '23'), 216: (8, '12'), 228: (8, '16'),  # Relm
+        10: (9, '15'), 24: (9, '09'), 217: (9, '27'), 229: (9, '08'),  # Setzer
+        11: (10, '19'), 25: (10, '22'), 218: (10, '07'), 230: (10, '08'),  # Mog
+        12: (11, '16'), 26: (11, '06'), 219: (11, '00'), 231: (11, '22'),  # Gau
+    }
+
+    # Update command_list only for cards that are in the party
+    for card in party_cards:
+        if card in card_to_command:
+            index, command = card_to_command[card]
+            command_list[index] = command
 
     com = ' -com '
     com += ''.join(command_list)
@@ -435,7 +675,7 @@ async def createflags(interaction, cards) -> str:
         rec6 = ' -rec6 07'
     else:
         rec1 = ' -rec1 28'
-        rec2 = ' -rec2 27'
+        rec2 = ''
         rec3 = ''
         rec4 = ''
         rec5 = ''
@@ -443,7 +683,7 @@ async def createflags(interaction, cards) -> str:
 
     commands = ''.join([scc, com, rec1, rec2, rec3, rec4, rec5, rec6])
 
-    party = ''.join([sparty, swdtech, blitz, lores, rage, dance, cstats, commands, steal, sketch])
+    party = ''.join([sparty, swdtech, blitz, lores, rage, dance, cstats, commands, steal, drops, sketch])
 
     # -----BATTLE-----
     # XP, GP, MP growth rates
@@ -514,7 +754,7 @@ async def createflags(interaction, cards) -> str:
     b_ai = ''.join([dgne, wnz, mmnu, cmd])
 
     # SCALING
-    scale_card = await last_card(cards, 43, 44, 45, 46, 47, 144)
+    scale_card = await last_card(cards, 43, 44, 45, 46, 47, 144, 171, 172, 173)
     if scale_card == 43:
         lscale = ' -lsced 4'
         hmscale = ' -hmced 1'
@@ -545,6 +785,21 @@ async def createflags(interaction, cards) -> str:
         hmscale = ' -hmc 2.5'
         xgscale = ' -xgc 2'
         msl = ' -msl 50'
+    elif scale_card == 171:
+        lscale = ' -lsc 2'
+        hmscale = ' -hmc 2'
+        xgscale = ' -xgc 2'
+        msl = ' -msl 40'
+    elif scale_card == 172:
+        lscale = ' -lsced 2'
+        hmscale = ' -hmced 2'
+        xgscale = ' -xgbd 2'
+        msl = ' -msl 40'
+    elif scale_card == 173:
+        lscale = ' -lsced 2.5'
+        hmscale = ' -hmced 2.5'
+        xgscale = ' -xgbd 2'
+        msl = ' -msl 50'
     else:
         lscale = ' -lsced 2'
         hmscale = ' -hmced 2'
@@ -565,8 +820,11 @@ async def createflags(interaction, cards) -> str:
     scaling = ''.join([lscale, hmscale, xgscale, ascale, msl, sfb, sed])
 
     # ENCOUNTERS
-    if 40 in cards:
+    enc_card = await last_card(cards,40,169)
+    if enc_card == 40:
         renc = ' -rer 20'
+    elif enc_card == 169:
+        renc = ''
     else:
         renc = ' -res'
 
@@ -574,7 +832,11 @@ async def createflags(interaction, cards) -> str:
         fenc = ' -fer 20'
     else:
         fenc = ' -fer 0'
-    escr = ' -escr 100'
+
+    if 203 in cards:
+        escr = ' -escr 0'
+    else:
+        escr = ' -escr 100'
 
     encounters = ''.join([renc, fenc, escr])
 
@@ -587,7 +849,7 @@ async def createflags(interaction, cards) -> str:
     else:
         stesp = ''
 
-    esper_card = await last_card(cards, 79, 80, 142, 145)
+    esper_card = await last_card(cards, 79, 80, 142, 145,186)
     if esper_card == 79:
         esr1 = 3
         esr2 = 5
@@ -604,6 +866,14 @@ async def createflags(interaction, cards) -> str:
         emprp1 = 100
         emprp2 = 150
         ems = ''
+    elif esper_card == 186:
+        esr1 = 0
+        esr2 = 5
+        el = ' -elr'
+        ebonus = ' -ebr 50'
+        emprp1 = 10
+        emprp2 = 200
+        ems = ' -ems'
     else:
         esr1 = 1
         esr2 = 4
@@ -612,6 +882,7 @@ async def createflags(interaction, cards) -> str:
         emprp1 = 75
         emprp2 = 125
         ems = ''
+
     if esper_card == 142:
         ess = ''
         el = ''
@@ -635,7 +906,10 @@ async def createflags(interaction, cards) -> str:
     if 150 in cards and esper_card != 142:
         el = ' -elrt'
 
-    espers = ''.join([stesp, ess, el, ebonus, emp, eeq, ems])
+    # ESPER MASTERY
+    emi = ' -emi'
+
+    espers = ''.join([stesp, ess, el, ebonus, emp, eeq, ems, emi])
 
     # NATURAL MAGIC
     nat_card = await last_card(cards, 76, 77, 78)
@@ -675,7 +949,7 @@ async def createflags(interaction, cards) -> str:
 
     mmp = ' '.join([' -mmprp', str(mmprp1), str(mmprp2)])
 
-    # remove learnable spells - cards 123,124,125,152
+    # remove learnable spells - cards 123,124,125,152,182,183,184,185
     rls_list = []
     if 123 in cards:
         rls_list.append('black')
@@ -685,8 +959,16 @@ async def createflags(interaction, cards) -> str:
         rls_list.append('gray')
     if 152 in cards:
         rls_list.append('top')
+    if 182 in cards:
+        rls_list.extend(['2', '7', '11', '1', '6', '10'])
+    if 183 in cards:
+        rls_list.extend(['0', '5', '9', '1', '6', '10', '23'])
+    if 184 in cards:
+        rls_list.extend(['0', '5', '9', '2', '7', '11', '23'])
+    if 185 in cards:
+        rls_list.extend(['12', '13', '18'])
     if len(rls_list) > 0:
-        rls = ' -rls ' + ','.join(rls_list)
+        rls = ' -rls ' + ','.join(set(rls_list))
     else:
         rls = ''
 
@@ -751,8 +1033,8 @@ async def createflags(interaction, cards) -> str:
         csb1 = 1
         csb2 = 8
     else:
-        csb1 = 5
-        csb2 = 13
+        csb1 = 4
+        csb2 = 16
     csb = ' '.join([' -csb', str(csb1), str(csb2)])
 
     mca = ' -mca'
@@ -761,7 +1043,7 @@ async def createflags(interaction, cards) -> str:
     equips = ''.join([iequip, requip, csb, mca, stra, saw])
 
     # ITEM REWARDS
-    rewards_card = await last_card(cards, 153, 154, 155, 156, 157, 158, 159)
+    rewards_card = await last_card(cards, 153, 154, 155, 156, 157, 158, 159, 204, 205, 206)
     if rewards_card == 153:
         ir = ' -ir stronger'
     elif rewards_card == 154:
@@ -776,6 +1058,12 @@ async def createflags(interaction, cards) -> str:
         ir = ' -ir 201,202,206,209,211,217,224,228'
     elif rewards_card == 159:
         ir = ' -ir none'
+    elif rewards_card == 204:
+        ir = ' -ir 98,120,128,129,147,148,154,156,161,162,239'
+    elif rewards_card == 205:
+        ir = ' -ir 9,26,27,28,33,35,60,82,97,239'
+    elif rewards_card == 206:
+        ir = ' -ir 96,206,209,211,216,217,224,228,239'
     else:
         ir = ' -ir standard'
 
@@ -826,7 +1114,11 @@ async def createflags(interaction, cards) -> str:
     else:
         shopprices = ' '.join([' -sprp', str(sprp1), str(sprp2)])
     sdm = ' -sdm 5'
-    npi = ' -npi'
+
+    if 181 in cards:
+        npi = ''
+    else:
+        npi = ' -npi'
 
     toy_card = await last_card(cards, 75, 134)
     if toy_card == 75:
@@ -846,7 +1138,12 @@ async def createflags(interaction, cards) -> str:
 
     # CHESTS
     chest_card = await last_card(cards, 72, 73, 74, 135, 136)
-    cms = ' -cms'
+
+    if 170 in cards:
+        cms = ''
+    else:
+        cms = ' -cms'
+
     if chest_card == 72:
         ccontents = ' -ccsr 100'
     elif chest_card == 73:
@@ -872,14 +1169,19 @@ async def createflags(interaction, cards) -> str:
 
     # -----OTHER-----
     # COLISEUM
-    colo = ' -cor -crr -crvr 50 60 -crm'
+    colo = ' -cor -crr -crvr 100 120 -crm'
 
     # AUCTION HOUSE
     ah = ' -ari -anca -adeh'
 
     # MISC
     asprint = ' -as'
-    ond = ' -ond'
+
+    if 207 in cards:
+        ond = ''
+    else:
+        ond = ' -ond'
+
     rr = ' -rr'
     scan = ''
     etimers = ' -etn'
@@ -935,7 +1237,38 @@ async def createflags(interaction, cards) -> str:
     # BUG FIXES
     bugfixes = ' -fs -fe -fvd -fr -fj -fbs -fedc -fc'
 
-    other = ''.join([colo, ah, challenges, misc, bugfixes])
+    if 207 in cards:
+        # This code does nothing at all, and all characters remain exactly who they appear to be.
+        # Zozo!? Never heard of it.
+        character_names = ["TERRA", "LOCKE", "CYAN", "SHADOW", "EDGAR", "SABIN",
+                                   "CELES", "STRAGO", "RELM", "SETZER", "MOG", "GAU",
+                                   "GOGO", "UMARO"]
+        portraits = list(range(len(character_names) + 1))
+        sprites = list(range(len(character_names))) + [14, 15, 18, 19, 20, 21]
+        palettes = [2, 1, 4, 4, 0, 0, 0, 3, 3, 4, 5, 3, 3, 5, 1, 0, 6, 1, 0, 3]
+
+        # Shuffle indices based on the character names length
+        shuffled_indices = await shuffle_list(list(range(len(character_names))))
+
+        # Apply consistent shuffle to all lists
+        shuffled_characters = [character_names[i] for i in shuffled_indices]
+        shuffled_portraits = [portraits[i] for i in shuffled_indices[:14]] + portraits[14:]
+        shuffled_sprites = [sprites[i] for i in shuffled_indices[:14]] + sprites[14:]
+        shuffled_palettes = [palettes[i] for i in shuffled_indices[:14]] + palettes[14:]
+
+        name = f" -name {'.'.join(map(str, shuffled_characters))}"
+        cpor = f" -cpor {'.'.join(map(str, shuffled_portraits))}"
+        cspr = f" -cspr {'.'.join(map(str, shuffled_sprites))}"
+        cspp = f" -cspp {'.'.join(map(str, shuffled_palettes))}"
+
+    else:
+        name = ''
+        cpor = ''
+        cspr = ''
+        cspp = ''
+    graphics = ''.join([name, cpor, cspr, cspp])
+
+    other = ''.join([colo, ah, challenges, graphics, misc, bugfixes])
 
     flagset = ''.join([game, party, battle, magic, items, other])
     return flagset

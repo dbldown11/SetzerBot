@@ -58,7 +58,10 @@ async def updatedeck(interaction, deck_csv):
                 "rarity"	INTEGER,
                 "name"	TEXT,
                 "desc"	TEXT,
-                "difficulty" INTEGER
+                "difficulty" INTEGER,
+                "mutual_exclusive" TEXT,
+                "character" INTEGER,
+                "objectives" INTEGER
                 );""")
             #print('made new table')
             #await conn.commit()
@@ -76,8 +79,8 @@ async def updatedeck(interaction, deck_csv):
             async with conn.cursor() as cursor:
                 for csv_row in csv_reader:
                     #print(csv_row)
-                    await cursor.execute("""INSERT INTO cards (id, category, weighting, rarity, name, desc, difficulty) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)""", tuple(csv_row))
+                    await cursor.execute("""INSERT INTO cards (id, category, weighting, rarity, name, desc, difficulty,
+                    mutual_exclusive, character, objectives) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", tuple(csv_row))
 
     # Commit the changes to the database and close the connection
                 #await conn.commit()

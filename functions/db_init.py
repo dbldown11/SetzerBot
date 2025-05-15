@@ -23,8 +23,33 @@ async def db_init():
                 "rarity"	INTEGER,
                 "name"	TEXT,
                 "desc"	TEXT,
-                "difficulty" INTEGER
+                "difficulty" INTEGER,
+                "mutual_exclusive" TEXT,
+                "character" INTEGER,
+                "objectives" INTEGER
                 );""")
+
+            # update cards table for version 1.3
+            await cursor.execute("PRAGMA table_info(cards)")
+            existing_columns = [row[1] for row in await cursor.fetchall()]
+
+            # Define new columns you want to ensure exist
+            new_columns = [
+                ("mutual_exclusive", "TEXT"),
+                ("character", "INTEGER"),
+                ("objectives", "INTEGER"),
+            ]
+
+            # Add columns if they're missing
+            for column_name, column_type in new_columns:
+                if column_name not in existing_columns:
+                    print(f"[INFO] Adding column '{column_name}' to 'cards'...")
+                    await cursor.execute(
+                        f"ALTER TABLE cards ADD COLUMN {column_name} {column_type}"
+                    )
+
+            await conn.commit()
+            print("[SUCCESS] 'cards' table migration complete.")
 
             # create drafters table
             await cursor.execute("""CREATE TABLE IF NOT EXISTS "drafters" (
@@ -52,6 +77,32 @@ async def db_init():
                 "raceroom" TEXT
                 );""")
 
+            # update drafts table for version 1.3
+            await cursor.execute("PRAGMA table_info(drafts)")
+            existing_columns = [row[1] for row in await cursor.fetchall()]
+
+            # Define new columns you want to ensure exist
+            new_columns = [
+                ("card_removal", "TEXT"),
+                ("calmness", "TEXT"),
+                ("rarity", "TEXT"),
+                ("categories", "TEXT"),
+                ("mulligan", "TEXT"),
+                ("character_cards", "TEXT"),
+                ("banned_cards", "TEXT")
+            ]
+
+            # Add columns if they're missing
+            for column_name, column_type in new_columns:
+                if column_name not in existing_columns:
+                    print(f"[INFO] Adding column '{column_name}' to 'drafts'...")
+                    await cursor.execute(
+                        f"ALTER TABLE drafts ADD COLUMN {column_name} {column_type}"
+                    )
+
+            await conn.commit()
+            print("[SUCCESS] 'drafts' table migration complete.")
+
             # create picks table
             await cursor.execute("""CREATE TABLE IF NOT EXISTS "picks" (
                 "index_id"	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -61,8 +112,29 @@ async def db_init():
                 "pick_number"	INTEGER,
                 "pick_options"  TEXT,
                 "removed_card"	INTEGER,
-                "isremoved"	INTEGER
+                "isremoved"	INTEGER,
+                "mulligans" INTEGER
                 );""")
+
+            # update drafts table for version 1.3
+            await cursor.execute("PRAGMA table_info(picks)")
+            existing_columns = [row[1] for row in await cursor.fetchall()]
+
+            # Define new columns you want to ensure exist
+            new_columns = [
+                ("mulligans", "INTEGER"),
+            ]
+
+            # Add columns if they're missing
+            for column_name, column_type in new_columns:
+                if column_name not in existing_columns:
+                    print(f"[INFO] Adding column '{column_name}' to 'picks'...")
+                    await cursor.execute(
+                        f"ALTER TABLE picks ADD COLUMN {column_name} {column_type}"
+                    )
+
+            await conn.commit()
+            print("[SUCCESS] 'picks' table migration complete.")
 
             await cursor.execute("""CREATE TABLE IF NOT EXISTS "personas" (
                 "index_id"	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,

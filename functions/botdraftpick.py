@@ -7,8 +7,9 @@ import asqlite
 import discord
 
 from classes.buttons import CardView
-from functions.constants import DATA_PATH
+from functions.constants import DATA_PATH, COMMON, UNCOMMON, RARE, MYTHIC
 from functions.stringfunctions import int_list_to_string, string_to_int_list
+from functions.get_card_list_by_rarity import get_card_list_by_rarity
 
 
 async def botpick(channel):
@@ -30,11 +31,11 @@ async def botpick(channel):
         # conn.row_factory = sqlite3.Row
         async with conn.cursor() as curs:
             await curs.execute("SELECT * FROM drafts WHERE raceroom = ?", (channel.name,))
-            data = await curs.fetchone()
+            this_draft = await curs.fetchone()
 
     async with asqlite.connect(path) as conn:
         async with conn.cursor() as curs:
-            await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1", (data['id'],))
+            await curs.execute("SELECT * FROM picks WHERE draft_id = ? AND card_id IS NULL LIMIT 1", (this_draft['id'],))
             current_pick = await curs.fetchone()
             if current_pick is None:
                 print('current pick is none')
@@ -53,6 +54,35 @@ async def botpick(channel):
             card_data = await curs.fetchall()
             # remember: card_data is a list of Rows, not a list of lists
 
+    async with asqlite.connect(path) as conn:
+        async with conn.cursor() as curs:
+            if this_draft['card_removal'] == 'on_pick':
+                await curs.execute("SELECT card_id FROM picks WHERE draft_id = ? and card_id IS NOT NULL", (this_draft['id'],))
+                rows = await curs.fetchall()
+                cards_picked = [row[0] for row in rows]
+                pickable_cards = [card for card in card_data if card['id'] not in cards_picked]
+            elif this_draft['card_removal'] == 'on_draw':
+                await curs.execute("SELECT pick_options FROM picks WHERE draft_id = ? AND pick_options IS NOT NULL",
+                                   (this_draft['id'],))
+                rows = await curs.fetchall()
+                cards_drawn = [
+                    int(card_id.strip())
+                    for row in rows
+                    for card_id in row[0].split(',')
+                    if card_id.strip() != '0'
+                ]
+                if len(cards_drawn) > 180:
+                    pickable_cards = card_data
+                else:
+                    pickable_cards = [card for card in card_data if card['id'] not in cards_drawn]
+            else:
+                pickable_cards = card_data
+
+    # Remove unused character_cards
+    if this_draft['banned_cards'] is not None:
+        char_cards_to_remove = await string_to_int_list(this_draft['banned_cards'])
+        pickable_cards = [card for card in pickable_cards if card['id'] not in char_cards_to_remove]
+
     cards = []
     if current_pick['pick_options'] is not None:
         #this should never trigger unless there was a very strangely timed disconnect
@@ -70,19 +100,78 @@ async def botpick(channel):
     else:
         # weights = ([i[3] for i in card_data])
         # has_drawn_removal = False
-        pick_list = []
-        while len(cards) < data['cards_per_pick']:
+        '''pick_list = []
+        while len(cards) < this_draft['cards_per_pick']:
             current_categories = [i[1] for i in cards]
-            new_card = random.choices(card_data, weights=([int(i[3]) for i in card_data]))[0]
+            new_card = random.choices(pickable_cards, weights=([int(i[3]) for i in pickable_cards]))[0]
             # if has_drawn_removal == False and new_card[4] == '4' and random.random() < 0.1:
             '''
-            if has_drawn_removal == False and random.random() < 0.05 and current_pick['pick_number'] > 1:
-                new_card = [0, 'Special', 'Special', '4', 'Calmness',
-                            'Remove a previously selected card from this seed']
-                has_drawn_removal = True
-                pick_list.append(new_card[0])
-            '''
+        '''if has_drawn_removal == False and random.random() < 0.05 and current_pick['pick_number'] > 1:
+            new_card = [0, 'Special', 'Special', '4', 'Calmness',
+                        'Remove a previously selected card from this seed']
+            has_drawn_removal = True
+            pick_list.append(new_card[0])'''
+
+
+        cards_to_draw = this_draft['cards_per_pick']
+        pick_list = []
+        while len(cards) < cards_to_draw:
+            current_categories = [i[1] for i in cards]
+            if this_draft['rarity'] == 'double':
+                new_card = random.choices(pickable_cards, weights=([int(i[3]) * 2 for i in pickable_cards]))[0]
+            elif this_draft['rarity'] == 'ignore':
+                new_card = random.choice(pickable_cards)
+            elif this_draft['rarity'] == 'packs':
+                # pack logic here
+                # build lists of pickable cards for each rarity, and if there are less than 5 left in the deck,
+                # then grab from the full base list of cards instead
+                # Get card lists for each rarity (using fallback if needed)
+                common_cards = await get_card_list_by_rarity(COMMON, pickable_cards, card_data)
+                uncommon_cards = await get_card_list_by_rarity(UNCOMMON, pickable_cards, card_data)
+                rare_cards = await get_card_list_by_rarity(RARE, pickable_cards, card_data)
+                mythic_cards = await get_card_list_by_rarity(MYTHIC, pickable_cards, card_data)
+
+                if this_draft['cards_per_pick'] == 1:
+                    new_card = random.choice(random.choices([common_cards, uncommon_cards, rare_cards, mythic_cards], weights=[40, 30, 20, 10])[0])
+                elif this_draft['cards_per_pick'] == 2:
+                    if len(pick_list) == 0:
+                        new_card = random.choice(random.choices([common_cards, uncommon_cards], weights=[70, 30])[0])
+                    elif len(pick_list) == 1:
+                        new_card = random.choice(random.choices([uncommon_cards, rare_cards, mythic_cards], weights=[50, 35, 15])[0])
+                elif this_draft['cards_per_pick'] == 3:
+                    if len(pick_list) == 0:
+                        new_card = random.choice(common_cards)
+                    elif len(pick_list) == 1:
+                        new_card = random.choice(random.choices([common_cards, uncommon_cards], weights=[50, 50])[0])
+                    elif len(pick_list) == 2:
+                        new_card = random.choice(random.choices([uncommon_cards, rare_cards, mythic_cards], weights=[20, 60, 20])[0])
+                elif this_draft['cards_per_pick'] == 4:
+                    if len(pick_list) <= 1:
+                        new_card = random.choice(common_cards)
+                    elif len(pick_list) == 2:
+                        new_card = random.choice(uncommon_cards)
+                    elif len(pick_list) == 3:
+                        new_card = random.choice(random.choices([rare_cards, mythic_cards], weights=[75, 25])[0])
+                elif this_draft['cards_per_pick'] == 5:
+                    if len(pick_list) <= 1:
+                        new_card = random.choice(common_cards)
+                    elif len(pick_list) == 2:
+                        new_card = random.choice(random.choices([common_cards, uncommon_cards], weights=[75, 25])[0])
+                    elif len(pick_list) == 3:
+                        new_card = random.choice(uncommon_cards)
+                    elif len(pick_list) == 4:
+                        new_card = random.choice(random.choices([rare_cards, mythic_cards], weights=[75, 25])[0])
+
+
+            else:
+                new_card = random.choices(pickable_cards, weights=([int(i[3]) for i in pickable_cards]))[0]
+
+
+
             if len(current_categories) == 0:
+                cards.append(new_card)
+                pick_list.append(new_card[0])
+            elif this_draft['categories'] == 'ignore':
                 cards.append(new_card)
                 pick_list.append(new_card[0])
             elif new_card[1] not in current_categories:
@@ -137,7 +226,7 @@ async def botpick(channel):
 
     # Step 1 - look for favourite char cards
     for x in cards:
-        if x['id'] <= 26 and x['id'] in fav_cards:
+        if (x['id'] <= 26 or 208 <= x['id'] <= 231) and x['id'] in fav_cards:
             print(f'{current_persona["name"]} found {x["name"]} in Step 1 and added to their picklist')
             potential_picks.append(x)
 
@@ -150,7 +239,7 @@ async def botpick(channel):
     # Step 2 - if nothing yet, look for favourite non-char cards
     if final_pick is None:
         for x in cards:
-            if x['id'] > 26 and x['id'] in fav_cards:
+            if 26 < x['id'] < 208 and x['id'] in fav_cards:
                 print(f'{current_persona["name"]} found {x["name"]} in Step 2 and added to their picklist')
                 potential_picks.append(x)
 
