@@ -279,9 +279,9 @@ async def createflags(interaction, cards) -> str:
         objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 22.10.10.1.1.11.52'])
         obj_count += 1
     if 201 in cards:
-        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 23.1.1.1.1.6.1.1'])
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 23.10.10.1.1.6.1.1'])
         obj_count += 1
-        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 23.1.1.1.1.6.2.2'])
+        objectives += '.'.join([' -' + obj_prefix[obj_count] + ' 23.10.10.1.1.6.2.2'])
         obj_count += 1
 
     #global character stat adjustments
