@@ -820,7 +820,7 @@ async def createflags(interaction, cards) -> str:
     scaling = ''.join([lscale, hmscale, xgscale, ascale, msl, sfb, sed])
 
     # ENCOUNTERS
-    enc_card = await last_card(cards,40,169)
+    enc_card = await last_card(cards,40,41,169)
     if enc_card == 40:
         renc = ' -rer 20'
     elif enc_card == 169:
@@ -828,8 +828,10 @@ async def createflags(interaction, cards) -> str:
     else:
         renc = ' -res'
 
-    if 41 in cards:
+    if enc_card == 41:
         fenc = ' -fer 20'
+    elif enc_card == 169:
+        fenc = ''
     else:
         fenc = ' -fer 0'
 
