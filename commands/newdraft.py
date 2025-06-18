@@ -39,7 +39,9 @@ async def newdraft(interaction, args) -> dict:
     channel = interaction.channel
     if channel.type == discord.ChannelType.private:
         channel_name = 'DM'
-    elif not channel.name.startswith(('ff6wc-', 'ff6wcdraft-', 'draft-')):
+    elif (channel.name.endswith('-spoilers') or
+          not (channel.name.startswith(('ff6wc-', 'ff6wcdraft-', 'draft-')) or
+               (channel.category and channel.category.name in ['Races', 'Sync Races', 'Event Races']))):
         emessage = f'Drafts can only be created in a raceroom.'
         await interaction.response.send_message(emessage, ephemeral=True)
         return None
